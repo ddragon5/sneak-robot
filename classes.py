@@ -50,38 +50,39 @@ class tails(pygame.sprite.Sprite):
         self.size = size
         self.dir = 2  # 1 = up  2 = right  3 = down  4 = left
 
-    def update(self, screen, tails, o, snakes, moved):
+    def update(self, screen, slots_s, o, snakes, moved):
         if not moved and (int(snakes[0].x+self.size[0]) != 690 or int(snakes[0].x)) != 0 and (self.tag[0] == 'snake' or self.tag == 'snake'):
             for c in range(len(snakes)):
-                for l in range(len(tails)):
+                for l in range(len(slots_s)):
+                    print(type(l))
                     if snakes[c].dir == 1:
-                        if tails[l].line == snakes[c].line - 1 and tails[l].row == snakes[c].row:
+                        if slots_s[l].line == snakes[c].line - 1 and slots_s[l].row == snakes[c].row:
                             if "head" in snakes[c].tag:
-                                tails[l].tag = ('snake', 'head', 1)
-                                tails[l].color = (138, 43, 226)
-                                tails[l].new = True
+                                slots_s[l].tag = ('snake', 'head', 1)
+                                slots_s[l].color = (138, 43, 226)
                                 snakes[c].tag = 'floor'
-                                snakes[0] = tails[l]
+                                snakes[0] = slots_s[l]
                             if 'body' in snakes[c].tag:
-                                tails[l].tag = ('snake', 'body', snakes[c].tag[2])
-                                tails[l].color = (138, 43, 226)
-                                tails[l].dir = snakes[0].dir
-                                snakes[snakes[c].tag[2]-1] = tails[l]
+                                slots_s[l].tag = ('snake', 'body', snakes[c].tag[2])
+                                slots_s[l].color = (138, 43, 226)
+                                slots_s[l].dir = snakes[0].dir
+                                inde = snakes[c].tag[2] - 1
+                                snakes[inde] = slots_s[l]
                             if 'last' in snakes[c].tag:
-                                tails[l].tag = ('snake', 'last', snakes[c].tag[2])
-                                tails[l].color = (138, 43, 226)
-                                tails[l].dir = snakes[snakes[c].tag[2]+1].dir
+                                slots_s[l].tag = ('snake', 'last', snakes[c].tag[2])
+                                slots_s[l].color = (138, 43, 226)
+                                slots_s[l].dir = snakes[snakes[c].tag[2] + 1].dir
                                 snakes[c].tag = 'floor'
                     if snakes[c].dir == 2:
-                        if tails[l].row == snakes[c].row + 1 and tails[l].line == snakes[c].line:
-                            pass
+                        #if tails[l].row == snakes[c].row + 1 and tails[l].line == snakes[c].line:
+                        pass
 
                     if snakes[c].dir == 3:
                         pass
                     if snakes[c].dir == 4:
                         pass
-            moved = True
-            print('dsf')
+            t = slots_s
+            print(t)
             if self.tag == 'floor':
                 if self.line % 2 != 0:
                     if self.row % 2 != 0:
@@ -94,6 +95,6 @@ class tails(pygame.sprite.Sprite):
                     else:
                         self.color = (170, 215, 81)  # lighter
             pygame.draw.rect(screen, self.color, self.rect)
-            return tails, moved
-
+            moved = True
+            return slots_s, moved, snakes
 

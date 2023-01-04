@@ -32,14 +32,15 @@ def floor(screen):
     g = width / 15
     f = height / 15
     size = (width / g, height / f)
-    if (width / size[0]) % 2 == 0:
+    if (width / size[0]) % 2 != 0:
         f += 1
     h = (g * f)
     h = int(h)
-    for i in range(h):
+    for i in range(h+1):
         slot = classes.tails(size, slots_s, screen)
         slots_s.append(slot)
         slots_r.append(slot.rect)
         if 'snake' in slot.tag:
             snakes.append(slot)
+    slots_s.pop(1840)
     return slots_s, slots_r, snakes
