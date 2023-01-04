@@ -7,12 +7,9 @@ import time
 def update(slots_s, slots_r, screen, snakes):
     screen = pygame.display.set_mode((create.width, create.height))
     create.create_backgound(screen)
+    m = False
     for o in range(len(slots_s)):
-        slots_s = slots_s[o].update(screen, slots_s, o, snakes)
-        if slots_s[o].tag[1] == 'head' or 'last' in slots_s[o].tag:
-            if slots_s[o].new:
-                slots_s[o].new = False
-
+        slots_s, m = slots_s[o].update(screen, slots_s, o, snakes, m)
     return slots_s
 
 

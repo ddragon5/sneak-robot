@@ -50,79 +50,50 @@ class tails(pygame.sprite.Sprite):
         self.size = size
         self.dir = 2  # 1 = up  2 = right  3 = down  4 = left
 
-    def update(self, screen, tails, o, snakes):
-        if int(snakes[0].x+self.size[0]) != 690 or int(snakes[0].x) != 0 and (self.tag[0] == 'snake' or self.tag == 'snake'):
-            if "head" in self.tag and not self.new:
-                print("here")
-                if self.dir == 1:
-                    for l in range(len(tails)):
-                        if tails[l].line == self.line - 1 and tails[l].row == self.row:
-                            tails[l].tag = ('snake', 'head')
-                            tails[l].color = (138, 43, 226)
-                            tails[l].new = True
-                            self.tag = 'floor'
-                            snakes[0] = tails[l]
+    def update(self, screen, tails, o, snakes, moved):
+        if not moved and (int(snakes[0].x+self.size[0]) != 690 or int(snakes[0].x)) != 0 and (self.tag[0] == 'snake' or self.tag == 'snake'):
+            for c in range(len(snakes)):
+                for l in range(len(tails)):
+                    if snakes[c].dir == 1:
+                        if tails[l].line == snakes[c].line - 1 and tails[l].row == snakes[c].row:
+                            if "head" in snakes[c].tag:
+                                tails[l].tag = ('snake', 'head', 1)
+                                tails[l].color = (138, 43, 226)
+                                tails[l].new = True
+                                snakes[c].tag = 'floor'
+                                snakes[0] = tails[l]
+                            if 'body' in snakes[c].tag:
+                                tails[l].tag = ('snake', 'body', snakes[c].tag[2])
+                                tails[l].color = (138, 43, 226)
+                                tails[l].dir = snakes[0].dir
+                                snakes[snakes[c].tag[2]-1] = tails[l]
+                            if 'last' in snakes[c].tag:
+                                tails[l].tag = ('snake', 'last', snakes[c].tag[2])
+                                tails[l].color = (138, 43, 226)
+                                tails[l].dir = snakes[snakes[c].tag[2]+1].dir
+                                snakes[c].tag = 'floor'
+                    if snakes[c].dir == 2:
+                        if tails[l].row == snakes[c].row + 1 and tails[l].line == snakes[c].line:
+                            pass
 
-                if self.dir == 2:
-                    for l in range(len(tails)):
-                        if tails[l].row == self.row + 1 and tails[l].line == self.line:
-                            tails[l].tag = ('snake', 'head')
-                            tails[l].color = (138, 43, 226)
-                            tails[l].new = True
-                            self.tag = 'floor'
-                            snakes[0] = tails[l]
-
-                if self.dir == 3:
-                    for l in range(len(tails)):
-                        if tails[l].line == self.line + 1 and tails[l].row == self.row:
-                            tails[l].tag = ('snake', 'head')
-                            tails[l].color = (138, 43, 226)
-                            tails[l].new = True
-                            self.tag = 'floor'
-                            snakes[0] = tails[l]
-
-                if self.dir == 4:
-                    for l in range(len(tails)):
-                        if tails[l].row == self.row - 1 and tails[l].line == self.line:
-                            tails[l].tag = ('snake', 'head')
-                            tails[l].color = (138, 43, 226)
-                            tails[l].new = True
-                            snakes[0] = tails[l]
-                            self.tag = 'floor'
-            if self.tag[0] == 'snake' and ('last' in self.tag and not self.new):
-                self.tag = 'floor'
-            if self.tag[0] == 'snake' and (self.tag[1] != "head" and self.tag[1] != 'last'):
-                if self.dir == 1:
-                    pass
-                if self.dir == 2:
-                    for l in range(len(tails)):
-                        if tails[l].row == self.row + 1 and tails[l].line == self.line:
-                            if self.tag[2] - 1 == 1:
-                                tails[l].tag = ('snake', 'head', self.tag[2])
-                            tails[l].tag = ('snake', 'body', self.tag[2])
-                            tails[l].color = (138, 43, 226)
-                            tails[l].dir = snakes[0].dir
-                            snakes[self.tag[2] - 1] = tails[l]
-                            if self.tag[2] + 1 == len(snakes):
-                                self.tag = ('snake', 'last', self.tag[2] + 1)
-                                snakes[0] = self
-                                self.new = True
-                if self.dir == 3:
-                    pass
-                if self.dir == 4:
-                    pass
-
-        if self.tag == 'floor':
-            if self.line % 2 != 0:
-                if self.row % 2 != 0:
-                    self.color = (155, 206, 62)  # darker
+                    if snakes[c].dir == 3:
+                        pass
+                    if snakes[c].dir == 4:
+                        pass
+            moved = True
+            print('dsf')
+            if self.tag == 'floor':
+                if self.line % 2 != 0:
+                    if self.row % 2 != 0:
+                        self.color = (155, 206, 62)  # darker
+                    else:
+                        self.color = (170, 215, 81)  # lighter
                 else:
-                    self.color = (170, 215, 81)  # lighter
-            else:
-                if self.row % 2 == 0:
-                    self.color = (155, 206, 62)  # darker
-                else:
-                    self.color = (170, 215, 81)  # lighter
+                    if self.row % 2 == 0:
+                        self.color = (155, 206, 62)  # darker
+                    else:
+                        self.color = (170, 215, 81)  # lighter
+            pygame.draw.rect(screen, self.color, self.rect)
+            return tails, moved
 
-        pygame.draw.rect(screen, self.color, self.rect)
-        return tails
+
