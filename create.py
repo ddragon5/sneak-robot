@@ -1,5 +1,5 @@
 import pygame
-import sklearn
+import torch
 
 import classes
 
@@ -28,6 +28,7 @@ def window():
 def floor(screen):
     slots_s = []
     slots_r = []
+    snakes = []
     g = width / 15
     f = height / 15
     size = (width / g, height / f)
@@ -39,4 +40,6 @@ def floor(screen):
         slot = classes.tails(size, slots_s, screen)
         slots_s.append(slot)
         slots_r.append(slot.rect)
-    return slots_s, slots_r
+        if 'snake' in slot.tag:
+            snakes.append(slot)
+    return slots_s, slots_r, snakes
