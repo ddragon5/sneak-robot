@@ -55,7 +55,6 @@ class tails(pygame.sprite.Sprite):
             moved = True
             for c in range(len(snakes)):
                 for l in range(len(slots_s)):
-                    print(type(l))
                     if snakes[c].dir == 1:
                         if slots_s[l].line == snakes[c].line - 1 and slots_s[l].row == snakes[c].row:
                             if "head" in snakes[c].tag:
@@ -76,6 +75,7 @@ class tails(pygame.sprite.Sprite):
                                 snakes[c].tag = 'floor'
                     if snakes[c].dir == 2:
                         if slots_s[l].row == snakes[c].row + 1 and slots_s[l].line == snakes[c].line:
+                            print('here')
                             if "head" in snakes[c].tag:
                                 slots_s[l].tag = ('snake', 'head', 1)
                                 slots_s[l].color = (138, 43, 226)
@@ -90,7 +90,7 @@ class tails(pygame.sprite.Sprite):
                             if 'last' in snakes[c].tag:
                                 slots_s[l].tag = ('snake', 'last', snakes[c].tag[2])
                                 slots_s[l].color = (138, 43, 226)
-                                slots_s[l].dir = snakes[snakes[c].tag[2] + 1].dir
+                                slots_s[l].dir = snakes[snakes[c].tag[2]-1].dir
                                 snakes[c].tag = 'floor'
                     if snakes[c].dir == 3:
                         if slots_s[l].line == snakes[c].line + 1 and slots_s.row == snakes[c].row:
@@ -128,17 +128,17 @@ class tails(pygame.sprite.Sprite):
                                 slots_s[l].color = (138, 43, 226)
                                 slots_s[l].dir = snakes[snakes[c].tag[2] + 1].dir
                                 snakes[c].tag = 'floor'
-            if self.tag == 'floor':
-                if self.line % 2 != 0:
-                    if self.row % 2 != 0:
-                        self.color = (155, 206, 62)  # darker
-                    else:
-                        self.color = (170, 215, 81)  # lighter
+        if self.tag == 'floor':
+            if self.line % 2 != 0:
+                if self.row % 2 != 0:
+                    self.color = (155, 206, 62)  # darker
                 else:
-                    if self.row % 2 == 0:
-                        self.color = (155, 206, 62)  # darker
-                    else:
-                        self.color = (170, 215, 81)  # lighter
-            pygame.draw.rect(screen, self.color, self.rect)
-            return slots_s, moved, snakes
+                    self.color = (170, 215, 81)  # lighter
+            else:
+                if self.row % 2 == 0:
+                    self.color = (155, 206, 62)  # darker
+                else:
+                    self.color = (170, 215, 81)  # lighter
+        pygame.draw.rect(screen, self.color, self.rect)
+        return slots_s, moved, snakes
 

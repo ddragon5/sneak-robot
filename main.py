@@ -23,6 +23,8 @@ def run(slots_s, slots_r, screen, snakes):
                 running = False
         slots_s = update(slots_s, slots_r, screen, snakes)
         pygame.display.update()
+        print(len(snakes))
+        time.sleep(5)
         clock.tick(1)
 
 
