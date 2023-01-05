@@ -9,8 +9,8 @@ def update(slots_s, slots_r, screen, snakes):
     create.create_backgound(screen)
     moved = False
     for o in range(len(slots_r)):
-        slots_s, moved, snakes = slots_s[o].update(screen, slots_s, o, snakes, moved)
-    return slots_s
+        slots_s, moved, snakes, running = slots_s[o].update(screen, slots_s, o, snakes, moved)
+    return slots_s, running
 
 
 
@@ -21,10 +21,9 @@ def run(slots_s, slots_r, screen, snakes):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-        slots_s = update(slots_s, slots_r, screen, snakes)
+        slots_s, running = update(slots_s, slots_r, screen, snakes)
         pygame.display.update()
         print(len(snakes))
-        time.sleep(5)
         clock.tick(1)
 
 

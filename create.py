@@ -41,5 +41,13 @@ def floor(screen):
         slots_s.append(slot)
         slots_r.append(slot.rect)
         if 'snake' in slot.tag:
+            slot.color = (138, 43, 226)
             snakes.append(slot)
+    t = 0
+    while len(snakes) >= 3 and t == 0:
+        snakes[0].tag = ('snake', 'head', 1)
+        snakes[1].tag = ('snake', 'body', 2)
+        snakes[2].tag = ('snake', 'last', 3)
+        t = 1
+    print(len(snakes))
     return slots_s, slots_r, snakes
