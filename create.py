@@ -40,14 +40,18 @@ def floor(screen):
         slot = classes.tails(size, slots_s, screen)
         slots_s.append(slot)
         slots_r.append(slot.rect)
-        if 'snake' in slot.tag:
+        if 'snake' in slot.tag:  # create a group of only the snake
             slot.color = (138, 43, 226)
             snakes.append(slot)
     t = 0
     while len(snakes) >= 3 and t == 0:
+        # give the right tags
         snakes[0].tag = ('snake', 'head', 1)
+        snakes[0].type = classes.Spots.HEAD
         snakes[1].tag = ('snake', 'body', 2)
+        snakes[1].type = classes.Spots.BODY
         snakes[2].tag = ('snake', 'last', 3)
+        snakes[2].type = classes.Spots.TAIL
         t = 1
     print(len(snakes))
     return slots_s, slots_r, snakes
