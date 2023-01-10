@@ -22,7 +22,6 @@ def update(slots_s, slots_r, screen, snakes):
 
 def run(slots_s, slots_r, screen, snakes):
     running = True
-    s = 0
     clock = pygame.time.Clock()
     while running:
         for event in pygame.event.get():
@@ -30,9 +29,7 @@ def run(slots_s, slots_r, screen, snakes):
                 running = False
         slots_s, running = update(slots_s, slots_r, screen, snakes)
         pygame.display.update()
-        s += 1
-        print(s)
-        clock.tick(10)
+        clock.tick(5)
 
 
 def main():
