@@ -15,10 +15,6 @@ class Spots(Enum):
 class tails(pygame.sprite.Sprite):
     def __init__(self, size, group, screen):
         super().__init__()
-        if len(group) % 2 != 0:
-            self.color = (155, 206, 62)  # darker
-        else:
-            self.color = (170, 215, 81)  # lighter
         self.x = 0
         self.y = 0
         f = 0
@@ -42,11 +38,22 @@ class tails(pygame.sprite.Sprite):
         self.mf = mf
         self.mg = int(self.mg)
         if self.line == self.mg / 2 and (self.row == 12 or self.row == 13 or self.row == 11):
-            self.tag = ('snake', 'potrkyk')
-            self.new = True
+            if self.row == 11:
+                self.type = Spots.TAIL
+                self.tag = ('snake', 'last', 3)
+
+            if self.row == 12:
+                self.type = Spots.BODY
+                self.tag = ('snake', 'body', 2)
+
+            if self.row == 13:
+                self.type = Spots.HEAD
+                self.tag = ('snake', 'head', 1)
+
         else:
             self.tag = ('floor')
             self.type = Spots.BLANK
+        self.color = get_color(self)
         self.rect = pygame.Rect(self.x, self.y, size[0], size[1])
         pygame.draw.rect(screen, self.color, self.rect)
         self.size = size
@@ -68,39 +75,25 @@ class tails(pygame.sprite.Sprite):
                     l = slots_s[n]
                     if c.dir == 1:
                         if l.line == c.line - 1 and l.row == c.row:
-                            if (c.type == Spots.HEAD and has_m[0] == True) or (
-                                    c.type == Spots.BODY and has_m[2] == len(snakes) - 2) or (
-                                    c.type == Spots.TAIL and has_m[1] == True):
-                                move(c, l, snakes, has_m)
-                            else:
-                                c, l, snakes, has_m = move(c, l, snakes, has_m)
+                            n += 1
+                            snakes, has_m, slots_s = move(c, l, snakes, has_m, slots_s)
                     if c.dir == 2:
                         if l.row == c.row + 1 and l.line == c.line:
                             n += 1
                             snakes, has_m, slots_s = move(c, l, snakes, has_m, slots_s)
                     if c.dir == 3:
                         if l.line == c.line + 1 and l.row == c.row:
-                            if (c.type == Spots.HEAD and has_m[0] == True) or (
-                                    c.type == Spots.BODY and has_m[2] == len(snakes) - 2) or (
-                                    c.type == Spots.TAIL and has_m[1] == True):
-                                move(c, l, snakes, has_m)
-                            else:
-                                c, l, snakes, has_m = move(c, l, snakes, has_m)
+                            n += 1
+                            snakes, has_m, slots_s = move(c, l, snakes, has_m, slots_s)
                     if c.dir == 4:
                         if l.row == c.row - 1 and l.line == c.line:
-                            if (c.type == Spots.HEAD and has_m[0] == True) or (
-                                    c.type == Spots.BODY and has_m[2] == len(snakes) - 2) or (
-                                    c.type == Spots.TAIL and has_m[1] == True):
-                                move(c, l, snakes, has_m)
-                            else:
-                                c, l, snakes, has_m = move(c, l, snakes, has_m)
-
+                            n += 1
+                            snakes, has_m, slots_s = move(c, l, snakes, has_m, slots_s)
                     if has_m[0] and has_m[1] and has_m[2] == 1:
                         break
                 if has_m[0] and has_m[1] and has_m[2] == 1:
                     break
-        if self.type == Spots.BLANK:
-            self.color = get_color(self)
+        self.color = get_color(self)
         pygame.draw.rect(screen, self.color, self.rect)
         return slots_s, moved, snakes, running
 
@@ -125,16 +118,13 @@ def move(c, l, snakes, has_m, s):
     if c.type == Spots.BODY:
         if has_m[2] >= len(snakes) - 2:
             g = snakes, has_m
-            print(type(snakes), type(has_m))
             return snakes, has_m, s
         else:
             has_m[2] += 1
-            print(type(snakes), type(has_m))
             return snakes, has_m, s
     if c.type == Spots.TAIL:
-        if has_m[1] == True:
+        if has_m[1]:
             g = snakes, has_m
-            print(type(snakes), type(has_m))
             return snakes, has_m, s
         else:
             c.tag = 'floor'
@@ -147,12 +137,11 @@ def move(c, l, snakes, has_m, s):
             l.tag = ('snake', 'last', 3)
             snakes[0] = l
             g = snakes, has_m
-            print(type(snakes), type(has_m))
-            return snakes, has_m
+            return snakes, has_m, s
 
 def get_color(n):
     # the color of the background
-    if n.type == 0:
+    if n.type.value == 0:
         if n.line % 2 != 0:
             if n.row % 2 != 0:
                 return (155, 206, 62)  # darker
