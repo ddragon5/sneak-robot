@@ -151,13 +151,18 @@ def move(c, l, snakes, has_m, s):
             return snakes, has_m
 
 def get_color(n):
-    if n.line % 2 != 0:
-        if n.row % 2 != 0:
-            return (155, 206, 62)  # darker
+    # the color of the background
+    if n.type == 0:
+        if n.line % 2 != 0:
+            if n.row % 2 != 0:
+                return (155, 206, 62)  # darker
+            else:
+                return (170, 215, 81)  # lighter
         else:
-            return (170, 215, 81)  # lighter
-    else:
-        if n.row % 2 == 0:
-            return (155, 206, 62)  # darker
-        else:
-            return (170, 215, 81)  # lighter
+            if n.row % 2 == 0:
+                return (155, 206, 62)  # darker
+            else:
+                return (170, 215, 81)  # lighter
+    # the color of the snake
+    if n.type.value >= 1 and n.type.value != 4:
+        return (138, 43, 226)
