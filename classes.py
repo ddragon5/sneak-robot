@@ -53,13 +53,13 @@ class tails(pygame.sprite.Sprite):
         if self.line == self.mg / 2 and self.row in possible_row:
             if self.row == possible_row[0]:
                 self.type = Spots.TAIL
-                self.tag = ('snake', 'last', 4)
+                self.tag = ('snake', 'last', snake_len)
 
-            if self.row != (possible_row[0] or possible_row[snake_len-1]):
+            if self.row != (possible_row[0] or possible_row[snake_len - 1]):
                 self.type = Spots.BODY
                 self.tag = ('snake', 'body', 2)
 
-            if self.row == possible_row[snake_len-1]:
+            if self.row == possible_row[snake_len - 1]:
                 self.type = Spots.HEAD
                 self.tag = ('snake', 'head', 1)
 
@@ -80,6 +80,7 @@ class tails(pygame.sprite.Sprite):
             moved = True
             tail_moved = False
             head_moved = False
+            r = 5
             body_moved = 0
             has_m = [head_moved, tail_moved, body_moved]
             for i in range(len(snakes)):
@@ -88,22 +89,38 @@ class tails(pygame.sprite.Sprite):
                 c.dir_value = c.dir.value
                 for n in range(len(slots_s)):
                     l = slots_s[n]
+                    if c.type == Spots.TAIL:
+                        if c.dir == Dir.UP:
+                            if l.line == c.line + 1 and l.row == c.row:
+                                q = l
+                        if c.dir == Dir.DOWN:
+                            if l.line == c.line - 1 and l.row == c.row:
+                                q = l
+                        if c.dir == Dir.RIGHT:
+                            if l.row == c.row - 1 and l.line == c.line:
+                                q = l
+                        if c.dir == Dir.LEFT:
+                            if l.row == c.row + 1 and l.line == c.line:
+                                q = l
+
                     if c.dir == Dir.UP:
                         if l.line == c.line - 1 and l.row == c.row:
-                                snakes, has_m, slots_s = move(c, l, snakes, has_m, slots_s)
+                            r = l
                     if c.dir == Dir.DOWN:
                         if l.line == c.line + 1 and l.row == c.row:
-                            snakes, has_m, slots_s = move(c, l, snakes, has_m, slots_s)
+                            r = l
                     if c.dir == Dir.RIGHT:
                         if l.row == c.row + 1 and l.line == c.line:
-                            snakes, has_m, slots_s = move(c, l, snakes, has_m, slots_s)
+                            r = l
                     if c.dir == Dir.LEFT:
                         if l.row == c.row - 1 and l.line == c.line:
-                            snakes, has_m, slots_s = move(c, l, snakes, has_m, slots_s)
-                    if has_m[0] and has_m[1] and has_m[2] == 1:
-                        break
-                if has_m[0] and has_m[1] and has_m[2] == 1:
-                    break
+                            r = l
+
+                try:
+                    snakes, has_m, slots_s = move(c, r, snakes, has_m, slots_s)
+                except TypeError:
+                    pass
+            pygame.draw.rect(screen, c.color, c.rect)
         self.color = get_color(self)
         pygame.draw.rect(screen, self.color, self.rect)
         return slots_s, moved, snakes, running
@@ -111,22 +128,23 @@ class tails(pygame.sprite.Sprite):
     def check(self, snakes):
         is_dead = False
         head_moved = False
-        for i in range(len(snakes)-1):
+        for i in range(len(snakes) - 1):
             n = i
             i = snakes[i].rect
             if self.rect.colliderect(i):
                 is_dead = True
                 print('grefsdgv')
-                if n == snakes[len(snakes)-2]:
+                if n == snakes[len(snakes) - 2]:
                     print('jysergdf')
 
-        if (self.x >= 690 or int(self.x) <= 0) or (int(self.y + self.size[1]) >= 600 or (int(self.y + self.size[1]) == 15 and self.dir == Dir.UP)):
+        if (self.x >= 690 or int(self.x) <= 0) or (
+                int(self.y + self.size[1]) >= 600 or (int(self.y + self.size[1]) == 15 and self.dir == Dir.UP)):
             is_dead = True
-        #print(self.rect.colliderect(i))
+        # print(self.rect.colliderect(i))
         return not is_dead, head_moved
 
 
-def move(c, l, snakes, has_m, s):
+def move(c, l, snakes, has_m, s, q=10):
     if c.type == Spots.HEAD:
         if has_m[0] == True or (l.type == Spots.BODY and l.tag[2] == 2):
             g = snakes, has_m
@@ -138,8 +156,8 @@ def move(c, l, snakes, has_m, s):
             l.type = Spots.HEAD
             c.tag = ('snake', 'body', 2)
             c.type = Spots.BODY
-            snakes[len(snakes)-1] = l
-            snakes[len(snakes)-2] = c
+            snakes[len(snakes) - 1] = l
+            snakes[len(snakes) - 2] = c
             has_m[0] = True
             g = snakes, has_m
             return snakes, has_m, s
@@ -155,20 +173,40 @@ def move(c, l, snakes, has_m, s):
             g = snakes, has_m
             return snakes, has_m, s
         else:
-            l = snakes[0]
-            c.tag = 'floor'
+            r = snakes[1]
+            r.tag = ('snake', 'last', len(snakes))
+            r.new = True
+            r.color = (138, 43, 226)
+            r.type = Spots.TAIL
+            c.tag = ('floor')
             c.type = Spots.BLANK
             c.color = get_color(c)
-            s[c.index] = c
+            snakes[0] = r
             has_m[1] = True
-            l.type = Spots.TAIL
-            l.new = True
-            l.tag = ('snake', 'last', len(snakes))
-            l.color = get_color(l)
-            snakes[0] = l
-            s[l.index] = l
-            g = snakes, has_m, l, s
+            g = snakes, has_m
             return snakes, has_m, s
+
+
+#            t = c
+#            r = snakes[1]
+#            f = r
+#            # r -> t
+#            if f is r:
+#                r.type = c.type
+#                r.new = True
+#                r.tag = c.tag
+#                r.color = c.color
+#                snakes[0] = r
+#                s[r.index] = r
+#
+#            # c -> blank
+#            if t is c:
+#                c.tag = 'floor'
+#                c.type = Spots.BLANK
+#                c.color = get_color(c)
+#                s[c.index] = c
+#            if q != 10:
+#                return snakes, has_m, s, q
 
 def get_color(n):
     # the color of the background
@@ -184,5 +222,11 @@ def get_color(n):
             else:
                 return (170, 215, 81)  # lighter
     # the color of the snake
-    if n.type.value >= 1 and n.type.value != 4:
+    if n.type == Spots.HEAD:
         return (138, 43, 226)
+
+    if n.type == Spots.BODY:
+        return (187, 54, 105)
+
+    if n.type == Spots.TAIL:
+        return (252, 42, 232)

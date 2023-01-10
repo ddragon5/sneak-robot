@@ -51,7 +51,7 @@ def run(slots_s, slots_r, screen, snakes):
 
         slots_s, running = update(slots_s, slots_r, screen, snakes, n_dir)
         pygame.display.update()
-        clock.tick(5)
+        clock.tick(1)
 
 
 def main():
