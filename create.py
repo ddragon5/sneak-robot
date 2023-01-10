@@ -3,6 +3,7 @@ import torch
 
 import classes
 
+snake_len = 3
 width = 690  # 17 slots 53 pixel each
 height = 600  # 15 slots 40 pixel each
 background_colour = (151, 251, 252)
@@ -38,6 +39,7 @@ def floor(screen):
     h = int(h)
     for i in range(h):
         slot = classes.tails(size, slots_s, screen)
+        slot.index = i
         slots_s.append(slot)
         slots_r.append(slot.rect)
         if 'snake' in slot.tag:  # create a group of only the snake
@@ -53,5 +55,4 @@ def floor(screen):
         snakes[2].tag = ('snake', 'last', 3)
         snakes[2].type = classes.Spots.TAIL
         t = 1
-    print(len(snakes))
     return slots_s, slots_r, snakes
