@@ -173,15 +173,16 @@ def move(c, l, snakes, has_m, s, q=10):
             g = snakes, has_m
             return snakes, has_m, s
         else:
-            r = snakes[1]
+            r = l
             r.tag = ('snake', 'last', len(snakes))
             r.new = True
-            r.color = (138, 43, 226)
+            r.color = (252, 42, 232)
             r.type = Spots.TAIL
+            snakes[1] = r
             c.tag = ('floor')
             c.type = Spots.BLANK
             c.color = get_color(c)
-            snakes[0] = r
+
             has_m[1] = True
             g = snakes, has_m
             return snakes, has_m, s
