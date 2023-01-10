@@ -12,6 +12,13 @@ class Spots(Enum):
     FRUIT = 4
 
 
+class Dir(Enum):
+    UP = 1
+    DOWN = 2
+    RIGHT = 3
+    LEFT = 4
+
+
 class tails(pygame.sprite.Sprite):
     def __init__(self, size, group, screen):
         super().__init__()
@@ -23,7 +30,7 @@ class tails(pygame.sprite.Sprite):
             mf += 1
         self.line = 1
         self.row = 1
-        for t in range(len(group)):
+        for i in range(len(group)):
             f += 1
             self.x += size[0]
             self.row += 1
@@ -37,16 +44,22 @@ class tails(pygame.sprite.Sprite):
         self.mg = create.height / size[1]
         self.mf = mf
         self.mg = int(self.mg)
-        if self.line == self.mg / 2 and (self.row == 12 or self.row == 13 or self.row == 11):
-            if self.row == 11:
+        tail_point = 11
+        snake_len = 4
+        possible_row = []
+        for i in range(snake_len):
+            possible_row.append(tail_point)
+            tail_point += 1
+        if self.line == self.mg / 2 and self.row in possible_row:
+            if self.row == possible_row[0]:
                 self.type = Spots.TAIL
-                self.tag = ('snake', 'last', 3)
+                self.tag = ('snake', 'last', 4)
 
-            if self.row == 12:
+            if self.row != (possible_row[0] or possible_row[snake_len-1]):
                 self.type = Spots.BODY
                 self.tag = ('snake', 'body', 2)
 
-            if self.row == 13:
+            if self.row == possible_row[snake_len-1]:
                 self.type = Spots.HEAD
                 self.tag = ('snake', 'head', 1)
 
@@ -54,40 +67,38 @@ class tails(pygame.sprite.Sprite):
             self.tag = ('floor')
             self.type = Spots.BLANK
         self.color = get_color(self)
+        self.x = int(self.x)
         self.rect = pygame.Rect(self.x, self.y, size[0], size[1])
         pygame.draw.rect(screen, self.color, self.rect)
         self.size = size
-        self.dir = 2  # 1 = up  2 = right  3 = down  4 = left
+        self.dir = Dir.RIGHT
+        self.dir_value = Dir.RIGHT.value
 
-    def update(self, screen, slots_s, o, snakes, moved):
-        running = True
-        if not moved and (int(snakes[0].x + self.size[0]) != 690 or int(snakes[0].x)) != 0:
-            running = True
+    def update(self, screen, slots_s, o, snakes, moved, n_dir, running):
+        if not moved:
+            running = running
             moved = True
-            head_moved = False
             tail_moved = False
+            head_moved = False
             body_moved = 0
             has_m = [head_moved, tail_moved, body_moved]
-            n = 0
             for i in range(len(snakes)):
                 c = snakes[i]
+                c.dir = n_dir
+                c.dir_value = c.dir.value
                 for n in range(len(slots_s)):
                     l = slots_s[n]
-                    if c.dir == 1:
+                    if c.dir == Dir.UP:
                         if l.line == c.line - 1 and l.row == c.row:
-                            n += 1
-                            snakes, has_m, slots_s = move(c, l, snakes, has_m, slots_s)
-                    if c.dir == 2:
-                        if l.row == c.row + 1 and l.line == c.line:
-                            n += 1
-                            snakes, has_m, slots_s = move(c, l, snakes, has_m, slots_s)
-                    if c.dir == 3:
+                                snakes, has_m, slots_s = move(c, l, snakes, has_m, slots_s)
+                    if c.dir == Dir.DOWN:
                         if l.line == c.line + 1 and l.row == c.row:
-                            n += 1
                             snakes, has_m, slots_s = move(c, l, snakes, has_m, slots_s)
-                    if c.dir == 4:
+                    if c.dir == Dir.RIGHT:
+                        if l.row == c.row + 1 and l.line == c.line:
+                            snakes, has_m, slots_s = move(c, l, snakes, has_m, slots_s)
+                    if c.dir == Dir.LEFT:
                         if l.row == c.row - 1 and l.line == c.line:
-                            n += 1
                             snakes, has_m, slots_s = move(c, l, snakes, has_m, slots_s)
                     if has_m[0] and has_m[1] and has_m[2] == 1:
                         break
@@ -97,10 +108,27 @@ class tails(pygame.sprite.Sprite):
         pygame.draw.rect(screen, self.color, self.rect)
         return slots_s, moved, snakes, running
 
+    def check(self, snakes):
+        is_dead = False
+        head_moved = False
+        for i in range(len(snakes)-1):
+            n = i
+            i = snakes[i].rect
+            if self.rect.colliderect(i):
+                is_dead = True
+                print('grefsdgv')
+                if n == snakes[len(snakes)-2]:
+                    print('jysergdf')
+
+        if (self.x >= 690 or int(self.x) <= 0) or (int(self.y + self.size[1]) >= 600 or (int(self.y + self.size[1]) == 15 and self.dir == Dir.UP)):
+            is_dead = True
+        #print(self.rect.colliderect(i))
+        return not is_dead, head_moved
+
 
 def move(c, l, snakes, has_m, s):
     if c.type == Spots.HEAD:
-        if has_m[0] == True:
+        if has_m[0] == True or (l.type == Spots.BODY and l.tag[2] == 2):
             g = snakes, has_m
             return snakes, has_m, s
         else:
@@ -127,6 +155,7 @@ def move(c, l, snakes, has_m, s):
             g = snakes, has_m
             return snakes, has_m, s
         else:
+            l = snakes[0]
             c.tag = 'floor'
             c.type = Spots.BLANK
             c.color = get_color(c)
@@ -134,9 +163,11 @@ def move(c, l, snakes, has_m, s):
             has_m[1] = True
             l.type = Spots.TAIL
             l.new = True
-            l.tag = ('snake', 'last', 3)
+            l.tag = ('snake', 'last', len(snakes))
+            l.color = get_color(l)
             snakes[0] = l
-            g = snakes, has_m
+            s[l.index] = l
+            g = snakes, has_m, l, s
             return snakes, has_m, s
 
 def get_color(n):

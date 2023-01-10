@@ -37,6 +37,7 @@ def floor(screen):
         f += 1
     h = (g * f)
     h = int(h)
+    b = 2
     for i in range(h):
         slot = classes.tails(size, slots_s, screen)
         slot.index = i
@@ -45,4 +46,7 @@ def floor(screen):
         if 'snake' in slot.tag:  # create a group of only the snake
             slot.color = (138, 43, 226)
             snakes.append(slot)
+        if slot.type == classes.Spots.BODY:
+            slot.tag = ('snake', 'body', b)
+            b += 1
     return slots_s, slots_r, snakes
