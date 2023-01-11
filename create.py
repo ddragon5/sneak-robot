@@ -6,7 +6,7 @@ import classes
 snake_len = 3
 width = 690  # 17 slots 53 pixel each
 height = 600  # 15 slots 40 pixel each
-background_colour = (151, 251, 252)
+background_colour = (10, 10, 10)
 
 
 def create_backgound(screen):

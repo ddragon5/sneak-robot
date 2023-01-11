@@ -1,6 +1,4 @@
-import torch
 import pygame
-
 import classes
 import create
 import time
@@ -11,7 +9,7 @@ def update(slots_s, slots_r, screen, snakes, n_dir):
     create.create_backgound(screen)
     moved = False
     n = snakes[len(snakes) - 1]
-    running, head_moved = n.check(snakes)
+    running, moved = n.check(snakes)
     for i in range(len(slots_s)):
         slots_s, moved, snakes, running = slots_s[i].update(screen, slots_s, i, snakes, moved, n_dir, running)
 
@@ -52,15 +50,12 @@ def run(slots_s, slots_r, screen, snakes):
                 # left arrow and a key
                 if event.key == (pygame.K_LEFT or pygame.K_a):
                     n_dir = classes.Dir.LEFT
-            if len(al_dir) == y:
-                al_dir.pop(0)
-                al_dir.append(n_dir)
+        all_dir = classes.Tail_Dir(y, al_dir)
+        
+        if len(al_dir) != y:
+            al_dir.append(all_dir.__next__(n_dir))
+        snakes[0].dir_s = al_dir[0]
 
-        try:
-            snakes[0].dir_s = al_dir[u]
-        except IndexError:
-            pass
-        print(al_dir)
         slots_s, running = update(slots_s, slots_r, screen, snakes, n_dir)
         pygame.display.update()
         clock.tick(1)
