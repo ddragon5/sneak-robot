@@ -29,8 +29,12 @@ def run(slots_s, slots_r, screen, snakes):
     running = True
     n_dir = snakes[len(snakes)-1].dir
     dir = snakes[len(snakes)-1].dir
+    al_dir = [dir]
     clock = pygame.time.Clock()
+    u = -1
     while running:
+        u += 1
+        y = snakes[len(snakes)-1].len - 1  # len of snake - 1
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -48,7 +52,15 @@ def run(slots_s, slots_r, screen, snakes):
                 # left arrow and a key
                 if event.key == (pygame.K_LEFT or pygame.K_a):
                     n_dir = classes.Dir.LEFT
+            if len(al_dir) == y:
+                al_dir.pop(0)
+                al_dir.append(n_dir)
 
+        try:
+            snakes[0].dir_s = al_dir[u]
+        except IndexError:
+            pass
+        print(al_dir)
         slots_s, running = update(slots_s, slots_r, screen, snakes, n_dir)
         pygame.display.update()
         clock.tick(1)

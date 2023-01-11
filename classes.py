@@ -73,6 +73,8 @@ class tails(pygame.sprite.Sprite):
         self.size = size
         self.dir = Dir.RIGHT
         self.dir_value = Dir.RIGHT.value
+        self.dir_s = self.dir
+        self.len = snake_len
 
     def update(self, screen, slots_s, o, snakes, moved, n_dir, running):
         if not moved:
@@ -81,6 +83,7 @@ class tails(pygame.sprite.Sprite):
             tail_moved = False
             head_moved = False
             r = 5
+            q = 10
             body_moved = 0
             has_m = [head_moved, tail_moved, body_moved]
             for i in range(len(snakes)):
@@ -90,17 +93,17 @@ class tails(pygame.sprite.Sprite):
                 for n in range(len(slots_s)):
                     l = slots_s[n]
                     if c.type == Spots.TAIL:
-                        if c.dir == Dir.UP:
-                            if l.line == c.line + 1 and l.row == c.row:
-                                q = l
-                        if c.dir == Dir.DOWN:
+                        if c.dir_s == Dir.UP:
                             if l.line == c.line - 1 and l.row == c.row:
                                 q = l
-                        if c.dir == Dir.RIGHT:
-                            if l.row == c.row - 1 and l.line == c.line:
+                        if c.dir_s == Dir.DOWN:
+                            if l.line == c.line + 1 and l.row == c.row:
                                 q = l
-                        if c.dir == Dir.LEFT:
+                        if c.dir_s == Dir.RIGHT:
                             if l.row == c.row + 1 and l.line == c.line:
+                                q = l
+                        if c.dir_s == Dir.LEFT:
+                            if l.row == c.row - 1 and l.line == c.line:
                                 q = l
 
                     if c.dir == Dir.UP:
@@ -117,7 +120,7 @@ class tails(pygame.sprite.Sprite):
                             r = l
 
                 try:
-                    snakes, has_m, slots_s = move(c, r, snakes, has_m, slots_s)
+                    snakes, has_m, slots_s = move(c, r, snakes, has_m, slots_s, q)
                 except TypeError:
                     pass
             pygame.draw.rect(screen, c.color, c.rect)
@@ -173,11 +176,12 @@ def move(c, l, snakes, has_m, s, q=10):
             g = snakes, has_m
             return snakes, has_m, s
         else:
-            r = l
+            r = q
             r.tag = ('snake', 'last', len(snakes))
             r.new = True
             r.color = (252, 42, 232)
             r.type = Spots.TAIL
+            r.dir_s = c.dir_s
             snakes[1] = r
             c.tag = ('floor')
             c.type = Spots.BLANK
