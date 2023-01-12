@@ -1,7 +1,8 @@
 import pygame
-import torch
 import create
 from enum import Enum
+from misc import get_dir, get_color
+from move import move
 
 
 class Spots(Enum):
@@ -62,29 +63,11 @@ class tails(pygame.sprite.Sprite):
         tail_point = 11
         snake_len = 4
         possible_row = []
-        for i in range(snake_len):
-            possible_row.append(tail_point)
-            tail_point += 1
-        if self.line == self.mg / 2 and self.row in possible_row:
-            if self.row == possible_row[0]:
-                self.type = Spots.TAIL
-                self.tag = ('snake', 'last', snake_len)
-
-            if self.row != (possible_row[0] or possible_row[snake_len - 1]):
-                self.type = Spots.BODY
-                self.tag = ('snake', 'body', 2)
-
-            if self.row == possible_row[snake_len - 1]:
-                self.type = Spots.HEAD
-                self.tag = ('snake', 'head', 1)
-
-        else:
-            self.tag = ('floor')
-            self.type = Spots.BLANK
+        self.tag = ('floor')
+        self.type = Spots.BLANK
         self.color = get_color(self)
         self.x = int(self.x)
         self.rect = pygame.Rect(self.x, self.y, size[0], size[1])
-        pygame.draw.rect(screen, self.color, self.rect)
         self.size = size
         self.dir = Dir.RIGHT
         self.dir_value = Dir.RIGHT.value
@@ -135,107 +118,4 @@ class tails(pygame.sprite.Sprite):
             is_dead = True
         # print(self.rect.colliderect(i))
         return not is_dead, head_moved
-
-
-def move(c, y, snakes, has_m, s, q):
-    redo = True
-    while redo:
-        try:
-            if c.type == Spots.HEAD:
-                if has_m[0]:
-                    g = snakes, has_m
-                    redo = False
-                    return snakes, has_m, s
-                else:
-                    y.tag = ('snake', 'head', 1)
-                    y.new = True
-                    y.color = (138, 43, 226)
-                    y.type = Spots.HEAD
-                    c.tag = ('snake', 'body', 2)
-                    c.type = Spots.BODY
-                    snakes[len(snakes) - 1] = y
-                    snakes[len(snakes) - 2] = c
-                    has_m[0] = True
-                    redo = False
-                    g = snakes, has_m
-                    return snakes, has_m, s, c
-            if c.type == Spots.BODY:
-                if has_m[2] >= len(snakes) - 2:
-                    g = snakes, has_m
-                    redo = False
-                    return snakes, has_m, s, c
-                else:
-                    has_m[2] += 1
-                    redo = False
-                    return snakes, has_m, s, c
-            if c.type == Spots.TAIL:
-                if has_m[1]:
-                    s[c.index].color = (74, 176, 224)
-                    g = snakes, has_m
-                    redo = False
-                    return snakes, has_m, s, c
-                else:
-                    r = y
-                    r.tag = ('snake', 'last', len(snakes))
-                    r.new = True
-                    r.color = get_color(r)
-                    r.type = Spots.TAIL
-                    r.dir_s = c.dir_s
-                    snakes[0] = r
-                    c.tag = ('floor')
-                    c.type = Spots.BLANK
-                    c.color = get_color(c)
-        
-                    has_m[1] = True
-                    g = snakes, has_m
-                    redo = False
-                    return snakes, has_m, s, c
-        except AttributeError:
-            redo = True
-            print('rtegg')
-            y = get_dir(s, c)
-    print('gtrs')
-    return snakes, has_m, s, c
-
-def get_color(n):
-    # the color of the background
-    if n.type.value == 0:
-        if n.line % 2 != 0:
-            if n.row % 2 != 0:
-                return (155, 206, 62)  # darker
-            else:
-                return (170, 215, 81)  # lighter
-        else:
-            if n.row % 2 == 0:
-                return (155, 206, 62)  # darker
-            else:
-                return (170, 215, 81)  # lighter
-    # the color of the snake
-    if n.type == Spots.HEAD:
-        return (138, 43, 226)
-
-    if n.type == Spots.BODY:
-        return (187, 54, 105)
-
-    if n.type == Spots.TAIL:
-        return (252, 42, 232)
-
-
-def get_dir(slots_s, c, snakes):
-    for n in range(len(slots_s)):
-        l = slots_s[n]
-        if c.index == 939:
-            c = snakes[len(snakes)-2]
-        if c.dir == Dir.UP:
-            if l.line == c.line - 1 and l.row == c.row:
-                return l
-        if c.dir == Dir.DOWN:
-            if l.line == c.line + 1 and l.row == c.row:
-                return l
-        if c.dir == Dir.RIGHT:
-            if l.row == c.row + 1 and l.line == c.line:
-                return l
-        if c.dir == Dir.LEFT:
-            if l.row == c.row - 1 and l.line == c.line:
-                return l
 

@@ -1,7 +1,6 @@
 import pygame
 import classes
 import create
-import time
 
 
 def update(slots_s, slots_r, screen, snakes, n_dir):
@@ -23,7 +22,7 @@ def update(slots_s, slots_r, screen, snakes, n_dir):
     return slots_s, running
 
 
-def run(slots_s, slots_r, screen, snakes):
+def run(screen, size):
     running = True
     n_dir = snakes[len(snakes)-1].dir
     dir = snakes[len(snakes)-1].dir
@@ -63,8 +62,8 @@ def run(slots_s, slots_r, screen, snakes):
 
 def main():
     screen = create.window()
-    slots_s, slots_r, s = create.floor(screen)
-    run(slots_s, slots_r, screen, s)
+    size = create.size_squares(screen)
+    run(screen, size)
 
 
 if __name__ == "__main__":

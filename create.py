@@ -1,7 +1,6 @@
 import pygame
-import torch
+import os
 
-import classes
 
 snake_len = 3
 width = 690  # 17 slots 53 pixel each
@@ -11,10 +10,10 @@ background_colour = (10, 10, 10)
 
 def create_backgound(screen):
     all_sprites_list = pygame.sprite.Group()
-    Background_x = 0
-    Background_y = 0
-    Background_ = pygame.Rect(Background_x, Background_y, width, height)
-    pygame.draw.rect(screen, background_colour, Background_)
+    Background_x = int(width / 2)
+    Background_y = int(height / 2)
+    os.chdir('D:\python_projects\sneak robot\png')
+    Background_ = pygame.image.load('background')
     return Background_
 
 
@@ -26,7 +25,7 @@ def window():
     return screen
 
 
-def floor(screen):
+def size_squares(screen):
     slots_s = []
     slots_r = []
     snakes = []
@@ -37,16 +36,7 @@ def floor(screen):
         f += 1
     h = (g * f)
     h = int(h)
-    b = 2
-    for i in range(h):
-        slot = classes.tails(size, slots_s, screen)
-        slot.index = i
-        slots_s.append(slot)
-        slots_r.append(slot.rect)
-        if 'snake' in slot.tag:  # create a group of only the snake
-            slot.color = (138, 43, 226)
-            snakes.append(slot)
-        if slot.type == classes.Spots.BODY:
-            slot.tag = ('snake', 'body', b)
-            b += 1
-    return slots_s, slots_r, snakes
+    return size
+
+
+def snakes
