@@ -119,3 +119,6 @@ class snake(pygame.sprite.Sprite):
         if self.dir == Dir.DOWN:
             self.y -= size[1]
         pygame.draw.rect(screen, self.color, self.rect)
+
+    def check(self):
+        is_dead = False

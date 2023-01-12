@@ -22,16 +22,16 @@ def update(slots_s, slots_r, screen, snakes, n_dir):
     return slots_s, running
 
 
-def run(screen, size):
+def run(screen, size, snakes):
     running = True
-    #n_dir = snakes[len(snakes)-1].dir
-    #dir = snakes[len(snakes)-1].dir
-    al_dir = [dir]
+    al_dir = []
+    y = len(snakes)  # len of snake
+    for i in range(y):
+        al_dir.append(snakes[i].dir)
     clock = pygame.time.Clock()
     u = -1
     while running:
         u += 1
-        y = 3  # len of snake - 1
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False

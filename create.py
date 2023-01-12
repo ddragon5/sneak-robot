@@ -45,3 +45,4 @@ def create_snakes():
     for i in range(snake_len):
         snake = classes.snake
         snakes.append(snake)
+    return snakes
