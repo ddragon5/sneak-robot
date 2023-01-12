@@ -1,6 +1,7 @@
 import pygame
 import os
 
+import classes
 
 snake_len = 3
 width = 690  # 17 slots 53 pixel each
@@ -12,8 +13,8 @@ def create_backgound(screen):
     all_sprites_list = pygame.sprite.Group()
     Background_x = int(width / 2)
     Background_y = int(height / 2)
-    os.chdir('D:\python_projects\sneak robot\png')
     Background_ = pygame.image.load('background')
+    Background_ = pygame.transform.scale(Background_, (width, height))
     return Background_
 
 
@@ -36,7 +37,11 @@ def size_squares(screen):
         f += 1
     h = (g * f)
     h = int(h)
-    return size
+    return size, g, f
 
 
-def snakes
+def create_snakes():
+    snakes = []
+    for i in range(snake_len):
+        snake = classes.snake
+        snakes.append(snake)

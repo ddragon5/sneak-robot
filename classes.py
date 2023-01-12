@@ -38,41 +38,12 @@ class Tail_Dir:
 class tails(pygame.sprite.Sprite):
     def __init__(self, size, group, screen):
         super().__init__()
-        self.x = 0
-        self.y = 0
-        f = 0
-        mf = create.width / size[0]
-        if mf % 2 == 0:
-            mf += 1
-        self.line = 1
-        self.row = 1
-        for i in range(len(group)):
-            f += 1
-            self.x += size[0]
-            self.row += 1
-            if f == mf:
-                self.line += 1
-                f = 0
-                self.row = 1
-                self.y += size[1]
-                self.x = 0
-
-        self.mg = create.height / size[1]
-        self.mf = mf
-        self.mg = int(self.mg)
-        tail_point = 11
-        snake_len = 4
-        possible_row = []
-        self.tag = ('floor')
-        self.type = Spots.BLANK
-        self.color = get_color(self)
         self.x = int(self.x)
         self.rect = pygame.Rect(self.x, self.y, size[0], size[1])
         self.size = size
         self.dir = Dir.RIGHT
         self.dir_value = Dir.RIGHT.value
         self.dir_s = self.dir
-        self.len = snake_len
 
     def update(self, screen, slots_s, o, snakes, moved, n_dir, running):
         if not moved and self.type.value >= 1 and self.type.value != 4:
@@ -119,3 +90,32 @@ class tails(pygame.sprite.Sprite):
         # print(self.rect.colliderect(i))
         return not is_dead, head_moved
 
+########################################################################################################################
+
+class snake(pygame.sprite.Sprite):
+    def __init__(self, snake, size):
+        super.__init__()
+        self.color = (236, 231, 2)  # color of the snake
+        # find place on the grid
+        line = create.height // 2  # קו ישר
+        row = 11  # טור
+        for i in range(len(snake)):
+            row += 1
+            self.type = Spots[i]
+        self.gir_pos = (line, row)
+        # find x and y
+        self.x = row-1 * size[0]
+        self.y = line * size[1]
+        self.dir = Dir.RIGHT
+        self.rect = pygame.Rect(self.x, self.y, size[0], size[1])
+
+    def update(self, size, screen):
+        if self.dir == Dir.RIGHT:
+            self.x += size[0]
+        if self.dir == Dir.LEFT:
+            self.x -= size[0]
+        if self.dir == Dir.UP:
+            self.y += size[1]
+        if self.dir == Dir.DOWN:
+            self.y -= size[1]
+        pygame.draw.rect(screen, self.color, self.rect)
