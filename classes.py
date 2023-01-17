@@ -49,11 +49,10 @@ class snake(pygame.sprite.Sprite):
         self.image = pygame.Surface(size)
         self.image.fill(self.color)
         self.s_dir = self.dir
-        self.id = "pos: ", self.gir_pos, "x and y: ", self.x, self.y, self.dir, 'index: ', self.index, self.rect, self.type
+        self.id = "x and y: ", self.x, self.y, self.dir, 'index: ', self.index, self.rect, self.type
 
     def update(self, screen, snakes):
         size = self.size
-        t = self.x
         if self.dir == Dir.RIGHT:
             self.x += 15
         if self.dir == Dir.LEFT:
@@ -76,18 +75,14 @@ class snake(pygame.sprite.Sprite):
     def check(self, snakes, Background_, fruits, screen, g):
         Background_rect = Background_.get_rect()
         is_dead = False
-        a = False
-        b = False
         # checking if out of bonds
-        if Background_rect.contains(self.rect) == False:
+        if not Background_rect.contains(self.rect):
             is_dead = True
-            a = True
         # checking if he collided with him self except if he hit his neck
         for i in range(len(snakes) - 2):
             s = snakes[i]
             r = s.rect
             is_dead = self.rect.colliderect(r)  # True or False
-            b = True
         # checking if the snakes has eaten a fruit
         for i in range(len(fruits)):
             t = fruits[i]
