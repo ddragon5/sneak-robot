@@ -3,33 +3,36 @@ import classes
 import create
 
 
-def update(slots_s, slots_r, screen, snakes, n_dir):
+def update(screen, snakes, n_dir, fruits, g, f):
     screen = pygame.display.set_mode((create.width, create.height))
-    create.create_backgound(screen)
+    Background_ = create.create_backgound(screen)
     moved = False
-    n = snakes[len(snakes) - 1]
-    running, moved = n.check(snakes)
-    for i in range(len(slots_s)):
-        slots_s, moved, snakes, running = slots_s[i].update(screen, slots_s, i, snakes, moved, n_dir, running)
-
+    # update fruits
+    for i in range(len(fruits)):
+        n = fruits[i]
+        n.update(screen)
+    # update the position of snakes
     for i in range(len(snakes)):
-        # removing new tag
-        if slots_s[i].type == classes.Spots.HEAD or slots_s[i].type == classes.Spots.TAIL:
-            if slots_s[i].new:
-                slots_s[i].new = False
+        n = snakes[i]
+        snakes = n.update(screen, snakes)
+    # check if player was killed
+    n = snakes[len(snakes) - 1]
+    running, fruits, snakes = n.check(snakes, Background_, fruits, screen, g)
+    running = not running
 
-        # checking if the snake has been killed
-    return slots_s, running
+    return snakes, running, fruits
 
 
-def run(screen, size, snakes):
+def run(screen, size, snakes, fruits, g, f):
     running = True
     al_dir = []
+    n_dir = snakes[len(snakes)-1].dir
     y = len(snakes)  # len of snake
     for i in range(y):
         al_dir.append(snakes[i].dir)
     clock = pygame.time.Clock()
     u = -1
+    fps = 1
     while running:
         u += 1
         for event in pygame.event.get():
@@ -39,26 +42,36 @@ def run(screen, size, snakes):
             if event.type == pygame.KEYDOWN:
                 # test if the up arrow or the w key are preset
                 if event.key == (pygame.K_UP or pygame.K_w):
-                    n_dir = classes.Dir.UP
+                    n_dir = classes.Dir.DOWN
                 # test if the down arrow or the s key are preset
                 if event.key == (pygame.K_DOWN or pygame.K_s):
-                    n_dir = classes.Dir.DOWN
+                    n_dir = classes.Dir.UP
                 # right arrow and d key
                 if event.key == (pygame.K_RIGHT or pygame.K_d):
                     n_dir = classes.Dir.RIGHT
                 # left arrow and a key
                 if event.key == (pygame.K_LEFT or pygame.K_a):
                     n_dir = classes.Dir.LEFT
-        slots_s, running = update(slots_s, slots_r, screen, snakes, n_dir)
+
+                if event.key == pygame.K_l:
+                    fps += 1
+                if event.key == pygame.K_j:
+                    fps -= 1
+                    if fps <= 0:
+                        fps = 1
+
+        snakes[len(snakes) - 1].dir = n_dir
+        snakes, running, fruits = update(screen, snakes, n_dir, fruits, g, f)
         pygame.display.update()
-        clock.tick(1)
+        clock.tick(fps)
 
 
 def main():
     screen = create.window()
     size, g, f = create.size_squares(screen)
-    snakes = create.create_snakes()
-    run(screen, size)
+    snakes = create.create_snakes(size, g, f)
+    fruits = create.create_fruit(size, g, f, snakes)
+    run(screen, size, snakes, fruits, g, f)
 
 
 if __name__ == "__main__":
