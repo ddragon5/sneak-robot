@@ -3,7 +3,7 @@ import classes
 def get_color(n):
     # the color of the fruit
     if n.type == classes.Spots.FRUIT:
-        return
+        return (243, 11, 28)
     # the color of the snake
     if n.type == classes.Spots.HEAD:
         return (138, 43, 226)
@@ -43,28 +43,36 @@ def get_center(rect, sprite):
     return rect
 
 
-def longer(snakes, size, g):
+def longer(snakes, size, g, screen):
     f = 41
-    snake = snakes[0]
-    print(snakes[0].id)
-    if snakes[0].dir == classes.Dir.RIGHT:
-        print('efdz')
-        snake.x -= 15
-    if snakes[0].dir == classes.Dir.LEFT:
-        print('efdz')
-        snake.x += 15
-    if snakes[0].dir == classes.Dir.UP:
-        print('efdz')
-        snake.y -= 15
-    if snakes[0].dir == classes.Dir.DOWN:
-        print('efdz')
-        snake.y += 15
+    snake = classes.snake(snakes, size, g, f)
+    t = snakes[0].x
+    g = snakes[0].y
+    distens = 15
+    if snake.dir == classes.Dir.RIGHT:
+        snakes[0].x = snakes[0].x - distens
+        snakes[0].y = snakes[0].y
+    if snake.dir == classes.Dir.LEFT:      
+        snakes[0].x = snakes[0].x + distens
+        snakes[0].y = snakes[0].y
+    if snake.dir == classes.Dir.UP:
+        snakes[0].x = snakes[0].x   
+        snakes[0].y += 135
+    if snake.dir == classes.Dir.DOWN:
+        snakes[0].x = snakes[0].x
+        snakes[0].y = snakes[0].y - distens
 
-    snakes[0].type = classes.Spots.BODY
-    snake.type = classes.Spots.TAIL
-    snakes.reverse()
+    snake.x = t
+    snake.y = g
+    snake.index = 0
+    snake.rect.update(snake.x, snake.y, size[0], size[1])
+    screen.blit(snake.image, (snake.x, snake.y))
+    snakes[0].rect.update(snakes[0].x, snakes[0].y, size[0], size[1])
+    screen.blit(snakes[0].image, (snakes[0].x, snakes[0].y))
+    snake.new = False
+    snakes.insert(1, snake)
+    print(snakes[0].type)
     snakes.append(snake)
-    snakes.reverse()
     snakes[1].index = 1
     snakes[0].index = 0
     print(snake.x, snakes[1].x)

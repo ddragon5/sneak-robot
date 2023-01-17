@@ -1,3 +1,5 @@
+import time
+
 import pygame
 from enum import Enum
 import random
@@ -23,7 +25,8 @@ class Dir(Enum):
 class snake(pygame.sprite.Sprite):
     def __init__(self, snakes, size, g, f):
         super(pygame.sprite.Sprite, self).__init__()
-        self.color = (236, 231, 2)  # color of the snake
+        self.size = size
+        #self.color = (236, 231, 2)  # color of the snake
         # find place on the grid
         line = f // 2  # קו ישר
         row = 11  # טור
@@ -32,47 +35,81 @@ class snake(pygame.sprite.Sprite):
         self.type = Spots.BLANK
         if row == 11:
             self.type = Spots.TAIL
-            self.color = (78, 211, 0)
         if row == 13:
             self.type = Spots.HEAD
-            self.color = (228, 145, 0)
         if row == 12:
             self.type = Spots.BODY
+        self.new = False
         self.gir_pos = (line, row)
         # find x and y
         self.x = (row - 1) * size[0]
         self.y = line * size[1]
-        self.size = size
         self.dir = Dir.RIGHT
+        if self.type == Spots.BLANK:
+            self.dir = snakes[0].dir
+            self.x = snakes[0].x
+            self.y = snakes[0].y
+            self.new = True
+        if self.type == Spots.BLANK:
+            self.type = Spots.BODY
+        self.color = misc.get_color(self)
         self.index = len(snakes)
         self.rect = pygame.Rect(self.x, self.y, size[0], size[1])
         self.image = pygame.Surface(size)
+        print(self.color)
         self.image.fill(self.color)
         self.s_dir = self.dir
+        self.moved = False
         self.id = "x and y: ", self.x, self.y, self.dir, 'index: ', self.index, self.rect, self.type
 
-    def update(self, screen, snakes):
+    def update(self, screen, snakes, score, count):
         size = self.size
-        if self.dir == Dir.RIGHT:
-            self.x += 15
-        if self.dir == Dir.LEFT:
-            self.x -= 15
-        if self.dir == Dir.UP:
-            self.y += 15
-        if self.dir == Dir.DOWN:
-            self.y -= 15
+        if self.type == Spots.TAIL:
+            if self.dir == Dir.RIGHT:
+                self.x += 15
+            if self.dir == Dir.LEFT:
+                self.x -= 15
+            if self.dir == Dir.UP:
+                self.y += 15
+            if self.dir == Dir.DOWN:
+                self.y -= 15
+            print('coooooooooooooo')
+
+        if self.type != Spots.TAIL and not self.moved:
+            count += 1
+            print(count)
+            calc = 15
+            if self.dir == Dir.RIGHT:
+                self.x += calc
+            if self.dir == Dir.LEFT: 
+                self.x -= calc
+            if self.dir == Dir.UP:
+                self.y += calc
+            if self.dir == Dir.DOWN:
+                self.y -= calc
+            print(15 / (score+1))
+            #if score >= 1:
+            #    if self.dir == Dir.RIGHT:
+            #        self.x -= 15
+            #    if self.dir == Dir.LEFT:
+            #        self.x += 15
+            #    if self.dir == Dir.UP:
+            #        self.y -= 15
+            #    if self.dir == Dir.DOWN:
+            #        self.y += 15
         self.x = int(self.x)
         self.y = int(self.y)
         self.rect.update(self.x, self.y, size[0], size[1])
         screen.blit(self.image, (self.x, self.y))
+        self.moved = True
         try:
             self.dir = snakes[self.index+1].dir
         except IndexError:
             pass
         snakes[self.index] = self
-        return snakes
+        return snakes, count
 
-    def check(self, snakes, Background_, fruits, screen, g):
+    def check(self, snakes, Background_, fruits, screen, g, score):
         Background_rect = Background_.get_rect()
         is_dead = False
         # checking if out of bonds
@@ -89,8 +126,9 @@ class snake(pygame.sprite.Sprite):
             if self.rect.contains(t.rect):
                 t = t.spawn(screen, snakes, g)
                 fruits[i] = t
-                snakes = misc.longer(snakes, self.size, g)
-        return is_dead, fruits, snakes
+                snakes = misc.longer(snakes, self.size, g, screen)
+                score += 1
+        return is_dead, fruits, snakes, score
 
 ########################################################################################################################
 class fruit(pygame.sprite.Sprite):
@@ -99,7 +137,7 @@ class fruit(pygame.sprite.Sprite):
         self.type = Spots.FRUIT
         self.x = x
         self.y = y
-        self.color = (243, 11, 28)
+        self.color = misc.get_color(self)
         self.rect = pygame.Rect(self.x, self.y, size[0], size[1])
         self.image = pygame.Surface(size)
         self.image.fill(self.color)

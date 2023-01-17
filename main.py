@@ -1,9 +1,10 @@
 import pygame
 import classes
 import create
+import misc
 
 
-def update(screen, snakes, n_dir, fruits, g, f):
+def update(screen, snakes, n_dir, fruits, g, f, score):
     screen = pygame.display.set_mode((create.width, create.height))
     Background_ = create.create_backgound(screen)
     moved = False
@@ -12,15 +13,19 @@ def update(screen, snakes, n_dir, fruits, g, f):
         n = fruits[i]
         n.update(screen)
     # update the position of snakes
+    count = 0
     for i in range(len(snakes)):
         n = snakes[i]
-        snakes = n.update(screen, snakes)
+        snakes, count = n.update(screen, snakes, score, count)
+    for i in range(len(snakes)):
+        n = snakes[i]
+        n.moved = False
     # check if player was killed
     n = snakes[len(snakes) - 1]
-    running, fruits, snakes = n.check(snakes, Background_, fruits, screen, g)
+    running, fruits, snakes, score = n.check(snakes, Background_, fruits, screen, g, score)
     running = not running
 
-    return snakes, running, fruits
+    return snakes, running, fruits, score
 
 
 def run(screen, size, snakes, fruits, g, f):
@@ -33,6 +38,7 @@ def run(screen, size, snakes, fruits, g, f):
     clock = pygame.time.Clock()
     u = -1
     fps = 1
+    score = 0
     while running:
         u += 1
         for event in pygame.event.get():
@@ -59,9 +65,14 @@ def run(screen, size, snakes, fruits, g, f):
                     fps -= 1
                     if fps <= 0:
                         fps = 1
+                if event.key == pygame.K_m:
+                    snakes = misc.longer(snakes, size, g, screen)
+                    score += 1
 
+        if len(snakes) >= 4:
+            print(snakes[0].type, snakes[0].x, snakes[0].y)
         snakes[len(snakes) - 1].dir = n_dir
-        snakes, running, fruits = update(screen, snakes, n_dir, fruits, g, f)
+        snakes, running, fruits, score = update(screen, snakes, n_dir, fruits, g, f, score)
         pygame.display.update()
         clock.tick(fps)
 
