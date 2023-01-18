@@ -61,7 +61,7 @@ def longer(snakes, size, g, screen):
     if snake.dir == classes.Dir.DOWN:
         snakes[0].x = snakes[0].x
         snakes[0].y = snakes[0].y - distens
-
+    print(snake.type)
     snake.x = t
     snake.y = g
     snake.index = 0
@@ -71,10 +71,9 @@ def longer(snakes, size, g, screen):
     screen.blit(snakes[0].image, (snakes[0].x, snakes[0].y))
     snake.new = False
     snakes.insert(1, snake)
-    print(snakes[0].type)
     snakes.append(snake)
     snakes[1].index = 1
     snakes[0].index = 0
-    print(snake.x, snakes[1].x)
-    print(snake.y, snakes[1].y)
+    snakes[1].type = classes.Spots.BODY
+    snakes[1].color = get_color(snakes[1])
     return snakes

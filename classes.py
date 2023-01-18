@@ -50,19 +50,18 @@ class snake(pygame.sprite.Sprite):
             self.x = snakes[0].x
             self.y = snakes[0].y
             self.new = True
-        if self.type == Spots.BLANK:
             self.type = Spots.BODY
+
         self.color = misc.get_color(self)
         self.index = len(snakes)
         self.rect = pygame.Rect(self.x, self.y, size[0], size[1])
         self.image = pygame.Surface(size)
-        print(self.color)
         self.image.fill(self.color)
         self.s_dir = self.dir
         self.moved = False
         self.id = "x and y: ", self.x, self.y, self.dir, 'index: ', self.index, self.rect, self.type
 
-    def update(self, screen, snakes, score, count):
+    def update(self, screen, snakes, score, count, i, n_dir):
         size = self.size
         if self.type == Spots.TAIL:
             if self.dir == Dir.RIGHT:
@@ -73,11 +72,9 @@ class snake(pygame.sprite.Sprite):
                 self.y += 15
             if self.dir == Dir.DOWN:
                 self.y -= 15
-            print('coooooooooooooo')
 
-        if self.type != Spots.TAIL and not self.moved:
+        if self.type != Spots.TAIL and not self.moved or (self == snakes[len(snakes)-2] and self.moved and count > 2):
             count += 1
-            print(count)
             calc = 15
             if self.dir == Dir.RIGHT:
                 self.x += calc
@@ -87,26 +84,21 @@ class snake(pygame.sprite.Sprite):
                 self.y += calc
             if self.dir == Dir.DOWN:
                 self.y -= calc
-            print(15 / (score+1))
-            #if score >= 1:
-            #    if self.dir == Dir.RIGHT:
-            #        self.x -= 15
-            #    if self.dir == Dir.LEFT:
-            #        self.x += 15
-            #    if self.dir == Dir.UP:
-            #        self.y -= 15
-            #    if self.dir == Dir.DOWN:
-            #        self.y += 15
+
         self.x = int(self.x)
         self.y = int(self.y)
         self.rect.update(self.x, self.y, size[0], size[1])
         screen.blit(self.image, (self.x, self.y))
         self.moved = True
+
+        h = i + 1
         try:
-            self.dir = snakes[self.index+1].dir
+            self.dir = snakes[h].dir
         except IndexError:
-            pass
-        snakes[self.index] = self
+            if self.type == Spots.HEAD:
+                self.dir = n_dir
+
+        snakes[i] = self
         return snakes, count
 
     def check(self, snakes, Background_, fruits, screen, g, score):

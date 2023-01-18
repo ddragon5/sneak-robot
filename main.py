@@ -13,17 +13,30 @@ def update(screen, snakes, n_dir, fruits, g, f, score):
         n = fruits[i]
         n.update(screen)
     # update the position of snakes
+
+    if len(snakes) != score+3:
+        snakes.pop(1)
+
     count = 0
     for i in range(len(snakes)):
         n = snakes[i]
-        snakes, count = n.update(screen, snakes, score, count)
-    for i in range(len(snakes)):
-        n = snakes[i]
-        n.moved = False
+        snakes, count = n.update(screen, snakes, score, count, i, n_dir)
+
     # check if player was killed
     n = snakes[len(snakes) - 1]
     running, fruits, snakes, score = n.check(snakes, Background_, fruits, screen, g, score)
     running = not running
+
+    for i in range(len(snakes)):
+        n = snakes[i]
+        n.moved = False
+        snakes[i].type = classes.Spots.BLANK
+        if i == 0:
+            snakes[i].type = classes.Spots.TAIL
+        if i == (len(snakes)-1):
+            snakes[i].type = classes.Spots.HEAD
+        if n.type == classes.Spots.BLANK:
+            snakes[i].type = classes.Spots.BODY
 
     return snakes, running, fruits, score
 
@@ -31,13 +44,13 @@ def update(screen, snakes, n_dir, fruits, g, f, score):
 def run(screen, size, snakes, fruits, g, f):
     running = True
     al_dir = []
-    n_dir = snakes[len(snakes)-1].dir
+    n_dir = classes.Dir.RIGHT
     y = len(snakes)  # len of snake
     for i in range(y):
         al_dir.append(snakes[i].dir)
     clock = pygame.time.Clock()
     u = -1
-    fps = 1
+    fps = 3
     score = 0
     while running:
         u += 1
@@ -69,9 +82,9 @@ def run(screen, size, snakes, fruits, g, f):
                     snakes = misc.longer(snakes, size, g, screen)
                     score += 1
 
-        if len(snakes) >= 4:
-            print(snakes[0].type, snakes[0].x, snakes[0].y)
-        snakes[len(snakes) - 1].dir = n_dir
+        for i in range(len(snakes)):
+            print(snakes[i].type)
+
         snakes, running, fruits, score = update(screen, snakes, n_dir, fruits, g, f, score)
         pygame.display.update()
         clock.tick(fps)
