@@ -104,14 +104,9 @@ class snake(pygame.sprite.Sprite):
 
         h = i + 1
         try:
-            self.dir = snakes[h].dir
-            if i == 2 and score >= 1:
-                self.dir = n_dir
+            self.dir = dir_all[i+1]
         except IndexError:
-            if self.type == Spots.HEAD and score < 1:
-                self.dir = n_dir
-            if score >= 1 and i == (len(snakes)-1):
-                self.dir = snakes[1].dir
+            pass
 
         snakes[i] = self
         return snakes, count, dir_all

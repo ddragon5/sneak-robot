@@ -21,14 +21,7 @@ def update(screen, snakes, n_dir, fruits, g, f, score):
     count = 0
     for i in range(len(snakes)):
         n = snakes[i]
-        save = snakes
-        print("before:", end='')
-        print(snakes[i].type, snakes[i].gir_pos, end='')
-    snakes.sort()
-    for i in range(len(snakes)):
-        print('after:', end='')
-        print(snakes[i].type, snakes[i].gir_pos, end='')
-    snakes = save
+        dir_all.append(n.dir)
 
     for i in range(len(snakes)):
         n = snakes[i]
@@ -94,10 +87,7 @@ def run(screen, size, snakes, fruits, g, f):
                     snakes = misc.longer(snakes, size, g, screen)
                     score += 1
 
-        if score >= 1:
-            print(' ')
-            for i in range(len(snakes)):
-                print(snakes[i].type)
+        snakes[len(snakes)-1].dir = n_dir
 
         snakes, running, fruits, score = update(screen, snakes, n_dir, fruits, g, f, score)
         pygame.display.update()
