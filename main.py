@@ -5,6 +5,7 @@ import misc
 
 
 def update(screen, snakes, n_dir, fruits, g, f, score):
+    dir_all = []
     screen = pygame.display.set_mode((create.width, create.height))
     Background_ = create.create_backgound(screen)
     moved = False
@@ -20,7 +21,18 @@ def update(screen, snakes, n_dir, fruits, g, f, score):
     count = 0
     for i in range(len(snakes)):
         n = snakes[i]
-        snakes, count = n.update(screen, snakes, score, count, i, n_dir)
+        save = snakes
+        print("before:", end='')
+        print(snakes[i].type, snakes[i].gir_pos, end='')
+    snakes.sort()
+    for i in range(len(snakes)):
+        print('after:', end='')
+        print(snakes[i].type, snakes[i].gir_pos, end='')
+    snakes = save
+
+    for i in range(len(snakes)):
+        n = snakes[i]
+        snakes, count, dir_all = n.update(screen, snakes, score, count, i, n_dir, dir_all)
 
     # check if player was killed
     n = snakes[len(snakes) - 1]
@@ -82,8 +94,10 @@ def run(screen, size, snakes, fruits, g, f):
                     snakes = misc.longer(snakes, size, g, screen)
                     score += 1
 
-        for i in range(len(snakes)):
-            print(snakes[i].type)
+        if score >= 1:
+            print(' ')
+            for i in range(len(snakes)):
+                print(snakes[i].type)
 
         snakes, running, fruits, score = update(screen, snakes, n_dir, fruits, g, f, score)
         pygame.display.update()
