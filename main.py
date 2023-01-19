@@ -82,7 +82,7 @@ def run(screen, size, snakes, fruits, g, f):
                 if event.key == pygame.K_j:
                     fps -= 1
                     if fps <= 0:
-                        fps = 1
+                        fps = 0
                 if event.key == pygame.K_m:
                     snakes = misc.longer(snakes, size, g, screen)
                     score += 1

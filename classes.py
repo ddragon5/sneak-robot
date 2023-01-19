@@ -121,7 +121,7 @@ class snake(pygame.sprite.Sprite):
         for i in range(len(snakes) - 2):
             s = snakes[i]
             r = s.rect
-            is_dead = self.rect.colliderect(r)  # True or False
+            is_dead = self.rect.contains(r)  # True or False
         # checking if the snakes has eaten a fruit
         for i in range(len(fruits)):
             t = fruits[i]

@@ -50,17 +50,17 @@ def longer(snakes, size, g, screen):
     g = snakes[0].y
     distens = 15
     if snake.dir == classes.Dir.RIGHT:
-        snakes[0].x = snakes[0].x - distens
+        snakes[0].x -= distens
         snakes[0].y = snakes[0].y
     if snake.dir == classes.Dir.LEFT:      
-        snakes[0].x = snakes[0].x + distens
+        snakes[0].x += distens
         snakes[0].y = snakes[0].y
     if snake.dir == classes.Dir.UP:
         snakes[0].x = snakes[0].x   
-        snakes[0].y += 135
+        snakes[0].y -= distens
     if snake.dir == classes.Dir.DOWN:
         snakes[0].x = snakes[0].x
-        snakes[0].y = snakes[0].y - distens
+        snakes[0].y += distens
     print(snake.type)
     snake.x = t
     snake.y = g
