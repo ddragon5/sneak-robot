@@ -137,6 +137,8 @@ class snake(pygame.sprite.Sprite):
         return is_dead, fruits, snakes, score
 
 ########################################################################################################################
+
+
 class fruit(pygame.sprite.Sprite):
     def __init__(self, x, y, size):
         super(pygame.sprite.Sprite, self).__init__()

@@ -93,7 +93,7 @@ def run(screen, size, snakes, fruits, g, f):
             TEXT = font.render("WELCOME TO SNAKE", True, TEXT_COL)
             screen.blit(TEXT, (115 - 7.5, 20))
 
-            PLAY_BUTTON = classes.Button()
+            #PLAY_BUTTON = classes.Button()
 
             pygame.display.update()
             clock.tick(fps)

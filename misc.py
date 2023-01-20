@@ -1,5 +1,6 @@
 import classes
 
+
 def get_color(n):
     # the color of the fruit
     if n.type == classes.Spots.FRUIT:
@@ -14,7 +15,7 @@ def get_dir(slots_s, c, snakes):
     for n in range(len(slots_s)):
         l = slots_s[n]
         if c.index == 939:
-            c = snakes[len(snakes)-2]
+            c = snakes[len(snakes) - 2]
         if c.dir == classes.Dir.UP:
             if l.line == c.line - 1 and l.row == c.row:
                 return l
@@ -47,11 +48,11 @@ def longer(snakes, size, g, screen):
     if snake.dir == classes.Dir.RIGHT:
         snakes[0].x -= distens
         snakes[0].y = snakes[0].y
-    if snake.dir == classes.Dir.LEFT:      
+    if snake.dir == classes.Dir.LEFT:
         snakes[0].x += distens
         snakes[0].y = snakes[0].y
     if snake.dir == classes.Dir.UP:
-        snakes[0].x = snakes[0].x   
+        snakes[0].x = snakes[0].x
         snakes[0].y -= distens
     if snake.dir == classes.Dir.DOWN:
         snakes[0].x = snakes[0].x

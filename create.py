@@ -57,6 +57,7 @@ def create_snakes(size, g, f):
 
 ########################################################################################################################
 
+
 def create_fruit(size, g, f, snakes):
     fruits = []
     for i in range(2):  # spawn 2 fruits
@@ -64,16 +65,15 @@ def create_fruit(size, g, f, snakes):
         x = (x1 - 1) * size[0]  # get the x of the row
         y1 = random.randint(1, f)  # get a random line to spawn in
         y = y1 * size[1]  # get the y of the line
-        x_list = []
-        for i in range(len(snakes)):
-            x_list.append(snakes[i].x)
-            x_list.append(snakes[i].y)
-        if x1 in x_list:
-            x1 = random.randint(1, g)  # get a random row to spawn in
-            x = (x1 - 1) * size[0]  # get the x of the row
-        if y1 in x_list:
-            y1 = random.randint(1, f)  # get a random line to spawn in
-            y = y1 * size[1]  # get the y of the line
+        for n in range(len(snakes)):
+            snake_pos = (snakes[n].x, snakes[n].y)
+            fruit_pos = (x, y)
+            if fruit_pos == snake_pos:
+                x1 = random.randint(1, g)  # get a random row to spawn in
+                x = (x1 - 1) * size[0]  # get the x of the row
+                y1 = random.randint(1, f)  # get a random line to spawn in
+                y = y1 * size[1]  # get the y of the line
+                fruit_pos = (x, y)
 
         fruit = classes.fruit(x, y, size)
         fruits.append(fruit)
