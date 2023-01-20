@@ -57,7 +57,6 @@ class snake(pygame.sprite.Sprite):
         self.index = len(snakes)
         self.rect = pygame.Rect(self.x, self.y, size[0], size[1])
         self.image = pygame.Surface(size)
-        print(self.type.value)
         self.image.fill(self.color)
         self.s_dir = self.dir
         self.moved = False
@@ -179,14 +178,25 @@ class fruit(pygame.sprite.Sprite):
 
 
 class Button():
-    def __init__(self, image, hovering_image, pos):
+    def __init__(self, image, pos, hovering_image, color_key):
         self.image = image
         self.x = pos[0]
         self.y = pos[1]
+        self.pos = (self.x, self.y)
         self.hovering_image = hovering_image
+        self.colorkey = color_key
+        self.image.set_colorkey(color_key)
 
     def update(self, screen, chosen):
         if not chosen:
-            screen.blit(self.image)
+            self.image.set_colorkey(self.colorkey)
+            screen.blit(self.image, self.pos)
         if chosen:
-            screen.blit(self.hovering_image)
+            color_key = self.colorkey
+            r = color_key[0]
+            e = color_key[1]
+            g = color_key[2]
+            e += 4
+            color_key = (r, e, g)
+            self.image.set_colorkey(color_key)
+            screen.blit(self.hovering_image, self.pos)

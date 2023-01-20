@@ -78,3 +78,83 @@ def create_fruit(size, g, f, snakes):
         fruit = classes.fruit(x, y, size)
         fruits.append(fruit)
     return fruits
+
+
+########################################################################################################################
+
+
+def create_buttons(pos):
+    buttons = []
+    path = os.getcwd()
+    os.chdir('png')
+    start_image = pygame.image.load('start.png')
+    start_image = pygame.transform.scale(start_image, (400, 500))
+    y = pos[1]
+    y = y + 50
+    x = (width - start_image.get_size()[0]) / 2
+    pos = (x, y)
+    START_BUTTON = classes.Button(start_image, pos, start_image, (0, 183, 239))
+    buttons.append(START_BUTTON)
+
+    settings_image = pygame.image.load('settings.png')
+    settings_image = pygame.transform.scale(settings_image, (400, 500))
+    y = pos[1]
+    y += 80
+    pos = (x, y)
+    SETTINGS_BUTTON = classes.Button(settings_image, pos, settings_image, (0, 183, 239))
+    buttons.append(SETTINGS_BUTTON)
+
+    Quit_image = pygame.image.load('quit.png')
+    Quit_image = pygame.transform.scale(Quit_image, (400, 500))
+    y = pos[1]
+    y += 80
+    pos = (x, y)
+    QUIT_BUTTON = classes.Button(Quit_image, pos, Quit_image, (0, 183, 239))
+    buttons.append(QUIT_BUTTON)
+
+    os.chdir(path)
+    return START_BUTTON, SETTINGS_BUTTON, QUIT_BUTTON, buttons
+
+
+########################################################################################################################
+
+
+def create_settings(pos):
+    buttons = []
+    path = os.getcwd()
+    os.chdir('png')
+    colorkey = (0, 183, 239)
+    from classes import Button
+
+    difficulty_image = pygame.image.load('difficulty.png')
+    difficulty_image = pygame.transform.scale(difficulty_image, (400, 500))
+    y = pos[1]
+    y = 30
+    x = (width - difficulty_image.get_size()[0]) / 3
+    pos = (x, 30)
+    DIFFICULTY_BUTTON = Button(difficulty_image, pos, difficulty_image, colorkey)
+    # SLIDER
+    y = pos[1]
+    y = 30
+    x += 20
+    pos = (x, 30)
+    difficulty_slider = []
+    for i in range(1, 4):
+        print((str(i) + '.png'))
+        difficulty_image = pygame.image.load((str(i) + '.png'))
+        difficulty_image = pygame.transform.scale(difficulty_image, (400, 500))
+
+        DIFFICULTY_SLIDER = Button(difficulty_image, pos, difficulty_image, colorkey)
+        difficulty_slider.append(DIFFICULTY_SLIDER)
+
+    size_image = pygame.image.load('size.png')
+    size_image = pygame.transform.scale(size_image, (400, 500))
+    y = pos[1]
+    y = y + 80
+    x -= 20
+    pos = (x, y)
+    SIZE_BUTTON = Button(size_image, pos, size_image, colorkey)
+
+    os.chdir(path)
+    return DIFFICULTY_BUTTON, SIZE_BUTTON, difficulty_slider #, SKINS
+

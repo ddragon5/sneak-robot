@@ -42,12 +42,13 @@ def update(screen, snakes, n_dir, fruits, g, f, score):
             snakes[i].type = classes.Spots.HEAD
         if n.type == classes.Spots.BLANK:
             snakes[i].type = classes.Spots.BODY
+
     pygame.font.init()
     Score_font = pygame.font.SysFont('arialblack', 40)
     Score_COL = (255, 255, 255)
     Score_dis = Score_font.render(str(score), True, Score_COL)
     rect = Score_dis.get_rect()
-    rect.center = width/2-30, 20
+    rect.center = width / 2 - 30, 20
     screen.blit(Score_dis, rect.center)
 
     return snakes, running, fruits, score
@@ -57,6 +58,7 @@ def run(screen, size, snakes, fruits, g, f):
     pygame.init()
     game_loop = False
     start_menu = True
+    settings_menu = False
     running = True
     al_dir = []
     super_difficulty = False
@@ -72,28 +74,53 @@ def run(screen, size, snakes, fruits, g, f):
         fps = 10
     score = 0
     pygame.init()
+    chosen = 0  # | 0 for start | 1 for settings | 2 for quit |
     while running:
         while start_menu:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_SPACE:
-                        game_loop = True
-                        start_menu = False
+                    if event.key == pygame.K_DOWN:
+                        chosen += 1
+                        if chosen == 3:
+                            chosen = 0
+                    if event.key == pygame.K_UP:
+                        chosen -= 1
+                        if chosen == -1:
+                            chosen = 2
+
+                    if event.key == pygame.K_SPACE or event.key == pygame.K_RETURN:
+                        # start game
+                        if chosen == 0:
+                            game_loop = True
+                            start_menu = False
+                        # go to settings
+                        if chosen == 1:
+                            settings_menu = True
+                            start_menu = False
+                        if chosen == 2:
+                            # quit game
+                            running = False
 
             screen = pygame.display.set_mode((create.width, create.height))
             Background_ = create.create_backgound(screen)
-
 
             # title
             pygame.font.init()
             font = pygame.font.SysFont("arialblack", 40)
             TEXT_COL = (50, 50, 50)
             TEXT = font.render("WELCOME TO SNAKE", True, TEXT_COL)
-            screen.blit(TEXT, (115 - 7.5, 20))
+            rect = TEXT.get_rect()
+            rect.update(110.5, 20, TEXT.get_size()[0], TEXT.get_size()[1])
+            screen.blit(TEXT, (110.5, 20))
 
-            #PLAY_BUTTON = classes.Button()
+            # QUIT_BUTTON, buttons = classes.Button()
+            PLAY_BUTTON, SETTINGS_BUTTON, QUIT_BUTTON, buttons = create.create_buttons((rect.x, rect.y))
+
+            PLAY_BUTTON.update(screen, chosen == 0)
+            SETTINGS_BUTTON.update(screen, chosen == 1)
+            QUIT_BUTTON.update(screen, chosen == 2)
 
             pygame.display.update()
             clock.tick(fps)
@@ -142,6 +169,72 @@ def run(screen, size, snakes, fruits, g, f):
 
             snakes, game_loop, fruits, score = update(screen, snakes, n_dir, fruits, g, f, score)
             start_menu = not game_loop
+            pygame.display.update()
+            clock.tick(fps)
+
+        chosen = 0  # | 0 for difficulty | 1 for size |
+        scroll = 0
+        pygame.font.init()
+        font = pygame.font.SysFont("arialblack", 40)
+        TEXT_COL = (50, 50, 50)
+        TEXT = font.render("SETTINGS", True, TEXT_COL)
+        x = (width - TEXT.get_size()[0]) / 2
+        y = 20
+        rect = TEXT.get_rect()
+        DIFFICULTY_BUTTON, SIZE_BUTTON, difficulty_slider = create.create_settings((x, y))
+        while settings_menu:
+            diff_s = False
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+                if event.type == pygame.KEYDOWN or (event.type == pygame.K_RIGHT and diff_s):
+                    if not diff_s:
+                        if event.key == pygame.K_DOWN:
+                            chosen += 1
+                            if chosen >= 2:
+                                chosen = 0
+                    if diff_s:
+                        scroll += 1
+                        if scroll == 5:
+                            scroll = 1
+                    if event.key == pygame.K_UP or (event.type == pygame.K_LEFT and diff_s):
+                        if not diff_s:
+                            chosen -= 1
+                            if chosen <= -1:
+                                chosen = 2
+                        if diff_s:
+                            scroll -= 1
+                            if scroll == 0:
+                                scroll = 4
+
+                    if event.key == pygame.K_SPACE or event.key == pygame.K_RETURN:
+                        # start game
+                        if chosen == 0 and not diff_s:
+                            diff_s = True
+                        # go to settings
+                        if chosen == 1 and not diff_s:
+                            settings_menu = True
+                            start_menu = False
+                        if chosen == 2 and not diff_s:
+                            # quit game
+                            running = False
+
+            screen = pygame.display.set_mode((create.width, create.height))
+            Background_ = create.create_backgound(screen)
+
+            # title
+            rect.update(x, y, TEXT.get_size()[0], TEXT.get_size()[1])
+            screen.blit(TEXT, (x, y))
+
+            # buttons
+            if diff_s:
+                DIFFICULTY_BUTTON.update(screen, True)
+                difficulty_slider[scroll-1].update(screen, True)
+
+            if not diff_s:
+                DIFFICULTY_BUTTON.update(screen, chosen == 0)
+                SIZE_BUTTON.update(screen, chosen == 1)
+
             pygame.display.update()
             clock.tick(fps)
 
