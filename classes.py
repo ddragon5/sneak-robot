@@ -23,17 +23,16 @@ class Dir(Enum):
 
 
 class snake(pygame.sprite.Sprite):
-    def __init__(self, snakes, size, g, f):
+    def __init__(self, snakes, size, g, f, start_row=11, start_line=41 // 2):
         super(pygame.sprite.Sprite, self).__init__()
         self.size = size
-        #self.color = (236, 231, 2)  # color of the snake
         # find place on the grid
-        line = f // 2  # קו ישר
-        row = 11  # טור
+        line = start_line  # קו ישר
+        row = start_row  # טור
         for i in range(len(snakes)):
             row += 1
         self.type = Spots.BLANK
-        if row == 11:
+        if row == start_row:
             self.type = Spots.TAIL
         if row == 13:
             self.type = Spots.HEAD
@@ -58,6 +57,7 @@ class snake(pygame.sprite.Sprite):
         self.index = len(snakes)
         self.rect = pygame.Rect(self.x, self.y, size[0], size[1])
         self.image = pygame.Surface(size)
+        print(self.type.value)
         self.image.fill(self.color)
         self.s_dir = self.dir
         self.moved = False
@@ -102,7 +102,6 @@ class snake(pygame.sprite.Sprite):
         screen.blit(self.image, (self.x, self.y))
         self.moved = True
 
-        h = i + 1
         try:
             self.dir = dir_all[i+1]
         except IndexError:
@@ -117,11 +116,16 @@ class snake(pygame.sprite.Sprite):
         # checking if out of bonds
         if not Background_rect.contains(self.rect):
             is_dead = True
+            print('cause of death out of bounds')
         # checking if he collided with him self except if he hit his neck
         for i in range(len(snakes) - 2):
             s = snakes[i]
             r = s.rect
-            is_dead = self.rect.contains(r)  # True or False
+            if self.rect.contains(r):
+                is_dead = True  # True or False
+            if is_dead:
+                print("cause of death inside self")
+                print('specially', str(s.type), str(i), str(s.gir_pos))
         # checking if the snakes has eaten a fruit
         for i in range(len(fruits)):
             t = fruits[i]
@@ -167,3 +171,20 @@ class fruit(pygame.sprite.Sprite):
             else:  # redo
                 n = True
         return self
+
+
+########################################################################################################################
+
+
+class Button():
+    def __init__(self, image, hovering_image, pos):
+        self.image = image
+        self.x = pos[0]
+        self.y = pos[1]
+        self.hovering_image = hovering_image
+
+    def update(self, screen, chosen):
+        if not chosen:
+            screen.blit(self.image)
+        if chosen:
+            screen.blit(self.hovering_image)

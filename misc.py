@@ -5,14 +5,9 @@ def get_color(n):
     if n.type == classes.Spots.FRUIT:
         return (243, 11, 28)
     # the color of the snake
-    if n.type == classes.Spots.HEAD:
-        return (138, 43, 226)
-
-    if n.type == classes.Spots.BODY:
-        return (187, 54, 105)
-
-    if n.type == classes.Spots.TAIL:
-        return (252, 42, 232)
+    t = 1, 2, 3
+    if n.type.value in t:
+        return (236, 190, 2)  # color of the snake
 
 
 def get_dir(slots_s, c, snakes):
@@ -61,19 +56,20 @@ def longer(snakes, size, g, screen):
     if snake.dir == classes.Dir.DOWN:
         snakes[0].x = snakes[0].x
         snakes[0].y += distens
-    print(snake.type)
+
+    snake.type = classes.Spots.BODY
+    snake.color = get_color(snakes[1])
     snake.x = t
     snake.y = g
-    snake.index = 0
+
+    snake.index = 1
+
     snake.rect.update(snake.x, snake.y, size[0], size[1])
     screen.blit(snake.image, (snake.x, snake.y))
+
     snakes[0].rect.update(snakes[0].x, snakes[0].y, size[0], size[1])
     screen.blit(snakes[0].image, (snakes[0].x, snakes[0].y))
+
     snake.new = False
     snakes.insert(1, snake)
-    snakes.append(snake)
-    snakes[1].index = 1
-    snakes[0].index = 0
-    snakes[1].type = classes.Spots.BODY
-    snakes[1].color = get_color(snakes[1])
     return snakes

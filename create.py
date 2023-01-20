@@ -5,22 +5,24 @@ import random
 import classes
 
 snake_len = 3
-width = 690  # 17 slots 53 pixel each
-height = 600  # 15 slots 40 pixel each
-background_colour = (10, 10, 10)
+width = 690
+height = 600
+background_colour = (135, 206, 235)
 
 
 def create_backgound(screen):
     all_sprites_list = pygame.sprite.Group()
     Background_x = 0
     Background_y = 0
+    path = os.getcwd()
     os.chdir('png')
     Background_ = pygame.image.load('background.png')
     Background_ = pygame.transform.scale(Background_, (width, height))
-    os.chdir(r'C:\Users\Lior\OneDrive\Documents\GitHub\sneak-robot')
+    os.chdir(path)
     screen.blit(Background_, (Background_x, Background_y))
     return Background_
 
+########################################################################################################################
 
 def window():
     pygame.display.set_caption('robot sneak')
@@ -29,6 +31,7 @@ def window():
     screen.fill(background_colour)
     return screen
 
+########################################################################################################################
 
 def size_squares(screen):
     slots_s = []
@@ -43,6 +46,7 @@ def size_squares(screen):
     h = int(h)
     return size, g, f
 
+########################################################################################################################
 
 def create_snakes(size, g, f):
     snakes = []
@@ -51,8 +55,8 @@ def create_snakes(size, g, f):
         snakes.append(snake)
     return snakes
 
-
 ########################################################################################################################
+
 def create_fruit(size, g, f, snakes):
     fruits = []
     for i in range(2):  # spawn 2 fruits
