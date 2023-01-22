@@ -172,8 +172,8 @@ def run(screen, size, snakes, fruits, g, f):
             pygame.display.update()
             clock.tick(fps)
 
-        chosen = 0  # | 0 for difficulty | 1 for size |
-        scroll = 0
+        chosen = 0  # | 0 for difficulty | 1 for size | 2 for return |
+        scroll = 1
         pygame.font.init()
         font = pygame.font.SysFont("arialblack", 40)
         TEXT_COL = (50, 50, 50)
@@ -181,9 +181,9 @@ def run(screen, size, snakes, fruits, g, f):
         x = (width - TEXT.get_size()[0]) / 2
         y = 20
         rect = TEXT.get_rect()
-        DIFFICULTY_BUTTON, SIZE_BUTTON, difficulty_slider = create.create_settings((x, y))
+        DIFFICULTY_BUTTON, SIZE_BUTTON, difficulty_slider, RETURN_BUTTON = create.create_settings((x, y))
+        diff_s = False
         while settings_menu:
-            diff_s = False
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
@@ -191,33 +191,47 @@ def run(screen, size, snakes, fruits, g, f):
                     if not diff_s:
                         if event.key == pygame.K_DOWN:
                             chosen += 1
-                            if chosen >= 2:
+                            if chosen >= 3:
                                 chosen = 0
                     if diff_s:
                         scroll += 1
-                        if scroll == 5:
-                            scroll = 1
+                        if scroll == 4:
+                            scroll = 0
                     if event.key == pygame.K_UP or (event.type == pygame.K_LEFT and diff_s):
                         if not diff_s:
                             chosen -= 1
                             if chosen <= -1:
-                                chosen = 2
+                                chosen = 3
                         if diff_s:
                             scroll -= 1
                             if scroll == 0:
                                 scroll = 4
 
                     if event.key == pygame.K_SPACE or event.key == pygame.K_RETURN:
-                        # start game
-                        if chosen == 0 and not diff_s:
-                            diff_s = True
-                        # go to settings
-                        if chosen == 1 and not diff_s:
-                            settings_menu = True
-                            start_menu = False
-                        if chosen == 2 and not diff_s:
-                            # quit game
-                            running = False
+                        if not diff_s:
+                            # start game
+                            if chosen == 0:
+                                diff_s = True
+                            else:
+                                diff_s = False
+                            # go to settings
+                            if chosen == 1:
+                                settings_menu = True
+                                start_menu = False
+                            if chosen == 2:
+                                # return to mine menu
+                                start_menu = True
+                                settings_menu = False
+                        if diff_s:
+                            if scroll == 1:
+                                fps = 0
+                            if scroll == 2:
+                                fps = 10
+                            if scroll == 3:
+                                fps = 15
+                            if scroll == 4:
+                                fps = 20
+
 
             screen = pygame.display.set_mode((create.width, create.height))
             Background_ = create.create_backgound(screen)
@@ -229,11 +243,15 @@ def run(screen, size, snakes, fruits, g, f):
             # buttons
             if diff_s:
                 DIFFICULTY_BUTTON.update(screen, True)
-                difficulty_slider[scroll-1].update(screen, True)
+                if scroll != 2:
+                    difficulty_slider[scroll].update(screen, True)
+                else:
+                    difficulty_slider[scroll].update(screen, False)
 
             if not diff_s:
                 DIFFICULTY_BUTTON.update(screen, chosen == 0)
                 SIZE_BUTTON.update(screen, chosen == 1)
+            RETURN_BUTTON.update(screen, chosen == 2)
 
             pygame.display.update()
             clock.tick(fps)

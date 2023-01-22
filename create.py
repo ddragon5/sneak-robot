@@ -136,25 +136,32 @@ def create_settings(pos):
     # SLIDER
     y = pos[1]
     y = 30
-    x += 20
+    x += 250
     pos = (x, 30)
     difficulty_slider = []
-    for i in range(1, 4):
-        print((str(i) + '.png'))
+    for i in range(1, 5):
         difficulty_image = pygame.image.load((str(i) + '.png'))
         difficulty_image = pygame.transform.scale(difficulty_image, (400, 500))
-
+        colorkey = (243, 171, 99)
         DIFFICULTY_SLIDER = Button(difficulty_image, pos, difficulty_image, colorkey)
         difficulty_slider.append(DIFFICULTY_SLIDER)
-
+        print(i)
+    colorkey = (0, 183, 239)
     size_image = pygame.image.load('size.png')
     size_image = pygame.transform.scale(size_image, (400, 500))
     y = pos[1]
     y = y + 80
-    x -= 20
+    x -= 250
     pos = (x, y)
     SIZE_BUTTON = Button(size_image, pos, size_image, colorkey)
 
+    return_image = pygame.image.load('return.png')
+    return_image = pygame.transform.scale(return_image, (400, 500))
+    y = pos[1]
+    y += 80
+    pos = (x, y)
+    RETURN_BUTTON = Button(return_image, pos, return_image, colorkey)
+
     os.chdir(path)
-    return DIFFICULTY_BUTTON, SIZE_BUTTON, difficulty_slider #, SKINS
+    return DIFFICULTY_BUTTON, SIZE_BUTTON, difficulty_slider, RETURN_BUTTON #, SKINS
 

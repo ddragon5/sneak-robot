@@ -125,7 +125,7 @@ class snake(pygame.sprite.Sprite):
             if is_dead:
                 print("cause of death inside self")
                 print('specially', str(s.type), str(i), str(s.gir_pos))
-        # checking if the snakes has eaten a fruit
+        # checking if the snake has eaten a fruit
         for i in range(len(fruits)):
             t = fruits[i]
             if self.rect.contains(t.rect):
