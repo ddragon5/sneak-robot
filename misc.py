@@ -10,7 +10,6 @@ def get_color(n, skin=0):
     # the color of the snake
     t = 1, 2, 3
     if n.type.value in t:
-        print('kfkfkf')
         if skin == 0:
             return (236, 190, 2)
 

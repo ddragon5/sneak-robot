@@ -57,7 +57,6 @@ class snake(pygame.sprite.Sprite):
         self.index = len(snakes)
         self.rect = pygame.Rect(self.x, self.y, size[0], size[1])
         self.image = pygame.Surface(size)
-        print(skin)
         self.image.fill(self.color)
         self.s_dir = self.dir
         self.moved = False

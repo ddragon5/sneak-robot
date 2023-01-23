@@ -3,7 +3,6 @@ import classes
 import create
 import misc
 import os
-import random
 
 width = 690  # 17 slots 53 pixel each
 height = 600  # 15 slots 40 pixel each
@@ -136,7 +135,7 @@ def run(screen, size, g, f):
         x = (width - TEXT.get_size()[0]) / 2
         y = 20
         rect = TEXT.get_rect()
-        DIFFICULTY_BUTTON, SIZE_BUTTON, difficulty_slider, RETURN_BUTTON, SKINS_BUTTON, SKINS_SLIDER  = create.create_settings((x, y))
+        DIFFICULTY_BUTTON, difficulty_slider, RETURN_BUTTON, SKINS_BUTTON, SKINS_SLIDER = create.create_settings((x, y))
         diff_s = False
         skin_s = False
         while settings_menu:
@@ -160,7 +159,6 @@ def run(screen, size, g, f):
                             if chosen <= -1:
                                 chosen = 3
                     if event.key == pygame.K_LEFT and (diff_s or skin_s):
-                        print('opinjejr')
                         if diff_s or skin_s:
                             scroll -= 1
                             if scroll <= 0:
@@ -222,7 +220,6 @@ def run(screen, size, g, f):
 
             if skin_s:
                 SKINS_BUTTON.update(screen, True)
-                print(scroll)
                 SKINS_SLIDER[scroll-1].update(screen, True)
 
                 DIFFICULTY_BUTTON.update(screen, False)
@@ -283,9 +280,32 @@ def run(screen, size, g, f):
             pygame.display.update()
             clock.tick(fps)
 
+        chosen = 0
         while death_screen:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_LEFT:
+                        chosen -= 1
+                        if chosen <= -1:
+                            chosen = 2
+                    if event.key == pygame.K_RIGHT:
+                        chosen += 1
+                        if chosen >= 3:
+                            chosen = 0
+                    if event.key == pygame.K_SPACE or event.key == pygame.K_RETURN:
+                        if chosen == 0:
+                            start_menu = True
+                            death_screen = False
+                        if chosen == 1:
+                            leaderboard = True
+                            death_screen = False
+
             path = os.getcwd()
             os.chdir('png')
+            # I need to somehow save the run show the best score and maby make a popup bigger
+            # I will ask Tom he will help but first maby I will need to start on networking for that save part
 
             death_s = pygame.image.load('death_screen.png')
             death_s = pygame.transform.scale(death_s, (width, height))
@@ -299,10 +319,11 @@ def run(screen, size, g, f):
             rect = gm_dis.get_rect()
             rect.center = width / 2 - 30, 20
             screen.blit(gm_dis, (death_s.get_size()[0] / 2-rect.width/2, 70))
+            x = death_s.get_size()[0] / 2-rect.width/2
+            RETURN_BUTTON, LEADER_BUTTON = create.create_death_buttons(death_s, (x, 70))
 
-            RETURN_BUTTON, LEADER_BUTTON = create.create_death_buttons(death_s, (death_s.get_size()[0] / 2-rect.width/2, 70))
-
-            RETURN_BUTTON.update(screen, True)
+            RETURN_BUTTON.update(screen, chosen == 0)
+            LEADER_BUTTON.update(screen, chosen == 1)
             os.chdir(path)
 
             pygame.display.update()

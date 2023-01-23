@@ -109,7 +109,6 @@ def create_buttons(pos):
     y = pos[1]
     y += 80
     pos = (x, y)
-    print(pos)
     QUIT_BUTTON = classes.Button(Quit_image, pos, Quit_image, (0, 183, 239))
     buttons.append(QUIT_BUTTON)
 
@@ -180,7 +179,7 @@ def create_settings(pos):
         skins_slider.append(SKINS_SLIDER)
 
     os.chdir(path)
-    return DIFFICULTY_BUTTON, SIZE_BUTTON, difficulty_slider, RETURN_BUTTON, SKINS_BUTTON, skins_slider
+    return DIFFICULTY_BUTTON, difficulty_slider, RETURN_BUTTON, SKINS_BUTTON, skins_slider
 
 
 ########################################################################################################################
@@ -192,11 +191,15 @@ def create_death_buttons(death_s, pos):
 
     return_image = pygame.image.load('return.png')
     return_image = pygame.transform.scale(return_image, (400, 500))
-    x = 40
+    x = 10
     y = 206
     pos = (x, y)
     RETURN_BUTTON = Button(return_image, pos, return_image, colorkey)
 
-    LEADER_BUTTON = 1
+    leader_image = pygame.image.load('leader.png')
+    leader_image = pygame.transform.scale(leader_image, (400, 500))
+    x += 290
+    pos = (x, y)
+    LEADER_BUTTON = Button(leader_image, pos, leader_image, colorkey)
 
     return RETURN_BUTTON, LEADER_BUTTON
