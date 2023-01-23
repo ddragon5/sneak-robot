@@ -23,7 +23,7 @@ class Dir(Enum):
 
 
 class snake(pygame.sprite.Sprite):
-    def __init__(self, snakes, size, g, f, start_row=11, start_line=41 // 2):
+    def __init__(self, snakes, size, g, f, skin, start_row=11, start_line=41 // 2):
         super(pygame.sprite.Sprite, self).__init__()
         self.size = size
         # find place on the grid
@@ -51,12 +51,13 @@ class snake(pygame.sprite.Sprite):
             self.new = True
             self.type = Spots.BODY
 
-        self.color = misc.get_color(self)
+        self.color = misc.get_color(self, skin)
         self.row = row
         self.line = line
         self.index = len(snakes)
         self.rect = pygame.Rect(self.x, self.y, size[0], size[1])
         self.image = pygame.Surface(size)
+        print(skin)
         self.image.fill(self.color)
         self.s_dir = self.dir
         self.moved = False
@@ -109,7 +110,7 @@ class snake(pygame.sprite.Sprite):
         snakes[i] = self
         return snakes, count, dir_all
 
-    def check(self, snakes, Background_, fruits, screen, g, score):
+    def check(self, snakes, Background_, fruits, screen, g, score, skin):
         Background_rect = Background_.get_rect()
         is_dead = False
         # checking if out of bonds
@@ -131,7 +132,7 @@ class snake(pygame.sprite.Sprite):
             if self.rect.contains(t.rect):
                 t = t.spawn(screen, snakes, g)
                 fruits[i] = t
-                snakes = misc.longer(snakes, self.size, g, screen)
+                snakes = misc.longer(snakes, self.size, g, screen, skin)
                 score += 1
         return is_dead, fruits, snakes, score
 

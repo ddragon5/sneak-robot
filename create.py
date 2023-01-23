@@ -37,8 +37,8 @@ def size_squares(screen):
     slots_s = []
     slots_r = []
     snakes = []
-    g = int(width / 15)  # num of rows טורים
-    f = int(height / 15)  # num of lines שורות
+    g = int(width / 15)  # num of rows טורים 46
+    f = int(height / 15)  # num of lines שורות 40
     size = (int(width / g), int(height / f))
     if (width / size[0]) % 2 == 0:
         f += 1
@@ -48,10 +48,10 @@ def size_squares(screen):
 
 ########################################################################################################################
 
-def create_snakes(size, g, f):
+def create_snakes(size, g, f, skin):
     snakes = []
     for i in range(snake_len):
-        snake = classes.snake(snakes, size, g, f)
+        snake = classes.snake(snakes, size, g, f, skin)
         snakes.append(snake)
     return snakes
 
@@ -109,6 +109,7 @@ def create_buttons(pos):
     y = pos[1]
     y += 80
     pos = (x, y)
+    print(pos)
     QUIT_BUTTON = classes.Button(Quit_image, pos, Quit_image, (0, 183, 239))
     buttons.append(QUIT_BUTTON)
 
@@ -145,7 +146,6 @@ def create_settings(pos):
         colorkey = (243, 171, 99)
         DIFFICULTY_SLIDER = Button(difficulty_image, pos, difficulty_image, colorkey)
         difficulty_slider.append(DIFFICULTY_SLIDER)
-        print(i)
     colorkey = (0, 183, 239)
     size_image = pygame.image.load('size.png')
     size_image = pygame.transform.scale(size_image, (400, 500))
@@ -162,6 +162,41 @@ def create_settings(pos):
     pos = (x, y)
     RETURN_BUTTON = Button(return_image, pos, return_image, colorkey)
 
-    os.chdir(path)
-    return DIFFICULTY_BUTTON, SIZE_BUTTON, difficulty_slider, RETURN_BUTTON #, SKINS
+    skins_image = pygame.image.load('Skins.png')
+    skins_image = pygame.transform.scale(skins_image, (400, 500))
+    y = pos[1]
+    y -= 80
+    pos = (x, y)
+    SKINS_BUTTON = Button(skins_image, pos, skins_image, colorkey)
 
+    skins_slider = []
+    x += 250
+    pos = (x, y)
+    for i in range(4):
+        skins_image = pygame.image.load(("skin_" + str(i) + '_b' + '.png'))
+        skins_image = pygame.transform.scale(skins_image, (400, 500))
+        colorkey = (243, 171, 99)
+        SKINS_SLIDER = Button(skins_image, pos, skins_image, colorkey)
+        skins_slider.append(SKINS_SLIDER)
+
+    os.chdir(path)
+    return DIFFICULTY_BUTTON, SIZE_BUTTON, difficulty_slider, RETURN_BUTTON, SKINS_BUTTON, skins_slider
+
+
+########################################################################################################################
+
+
+def create_death_buttons(death_s, pos):
+    from classes import Button
+    colorkey = (0, 183, 239)
+
+    return_image = pygame.image.load('return.png')
+    return_image = pygame.transform.scale(return_image, (400, 500))
+    x = 40
+    y = 206
+    pos = (x, y)
+    RETURN_BUTTON = Button(return_image, pos, return_image, colorkey)
+
+    LEADER_BUTTON = 1
+
+    return RETURN_BUTTON, LEADER_BUTTON

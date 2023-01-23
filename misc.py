@@ -1,14 +1,25 @@
 import classes
+import pygame
+import os
 
-
-def get_color(n):
+def get_color(n, skin=0):
     # the color of the fruit
+    color = ';lksjcvbglgjhckvb'
     if n.type == classes.Spots.FRUIT:
         return (243, 11, 28)
     # the color of the snake
     t = 1, 2, 3
     if n.type.value in t:
-        return (236, 190, 2)  # color of the snake
+        print('kfkfkf')
+        if skin == 0:
+            return (236, 190, 2)
+
+        if skin == 1:
+            return (39, 79, 113)  # dark blue
+        if skin == 2:
+            return (111, 28, 240)  # pink
+        if skin == 3:
+            return (251, 179, 198)  # purple
 
 
 def get_dir(slots_s, c, snakes):
@@ -39,9 +50,9 @@ def get_center(rect, sprite):
     return rect
 
 
-def longer(snakes, size, g, screen):
+def longer(snakes, size, g, screen, skin):
     f = 41
-    snake = classes.snake(snakes, size, g, f)
+    snake = classes.snake(snakes, size, g, f, skin)
     t = snakes[0].x
     g = snakes[0].y
     distens = 15
