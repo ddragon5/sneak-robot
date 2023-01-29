@@ -63,15 +63,13 @@ def run(screen, size, g, f):
     settings_menu = False
     running = True
     al_dir = []
-    super_difficulty = False
+    best_score = 0
+    name = "not saved"
     n_dir = classes.Dir.RIGHT
     skin = 0
     clock = pygame.time.Clock()
     u = -1
-    if super_difficulty:
-        fps = 0
-    else:
-        fps = 10
+    fps = 10
     score = 0
     pygame.init()
     chosen = 0  # | 0 for start | 1 for settings | 2 for quit |
@@ -265,10 +263,7 @@ def run(screen, size, g, f):
                     if event.key == pygame.K_j:
                         fps -= 1
                         if fps <= 0:
-                            if super_difficulty:
-                                pass
-                            else:
-                                fps = 0
+                            fps = 0
                     if event.key == pygame.K_m:
                         snakes = misc.longer(snakes, size, g, screen, skin)
                         score += 1
@@ -277,6 +272,8 @@ def run(screen, size, g, f):
 
             snakes, game_loop, fruits, score = update(screen, snakes, n_dir, fruits, g, f, score, skin)
             death_screen = not game_loop
+            if score >= best_score:
+                best_score = score
             pygame.display.update()
             clock.tick(fps)
 
@@ -286,6 +283,9 @@ def run(screen, size, g, f):
                 if event.type == pygame.QUIT:
                     running = False
                 if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        running = False
+                        death_screen = False
                     if event.key == pygame.K_LEFT:
                         chosen -= 1
                         if chosen <= -1:
@@ -320,6 +320,46 @@ def run(screen, size, g, f):
             rect.center = width / 2 - 30, 20
             screen.blit(gm_dis, (death_s.get_size()[0] / 2-rect.width/2, 70))
             x = death_s.get_size()[0] / 2-rect.width/2
+
+            os.chdir('pixel_font')
+            best_font = pygame.font.Font('Grand9K Pixel.ttf', 40)
+            best_font.bold = True
+            best_COL = (25, 25, 25)
+            best_dis = best_font.render("Best:".upper(), False, best_COL)
+            b_rect = best_dis.get_rect()
+            b_rect.center = x+20, 70
+            cords = 407, 245
+            screen.blit(best_dis, cords)
+            os.chdir(path)
+            os.chdir('png')
+
+            score_dis = best_font.render(str(best_score), False, best_COL)
+            bx, by = cords  # make the text be in the same place as the BEST:
+            by += 50  # make it a bit lower
+            bx += best_dis.get_size()[0] / 2  # make the text in the middle
+            bx -= 25
+            cords = bx, by
+            screen.blit(score_dis, cords)
+
+            # show the name
+            os.chdir('pixel_font')
+            best_font = pygame.font.Font('Grand9K Pixel.ttf', 40)
+            best_font.bold = True
+            best_COL = (25, 25, 25)
+            best_dis = best_font.render('name:'.upper(), False, best_COL)
+            b_rect = best_dis.get_rect()
+            b_rect.center = x + 20, 70
+            cords = 146, 245
+            screen.blit(best_dis, cords)
+            os.chdir(path)
+            os.chdir('png')
+
+            score_dis = best_font.render(name, False, best_COL)
+            bx, by = cords  # make the text be in the same place as the BEST:
+            by += 50  # make it a bit lower
+            cords = bx, by
+            screen.blit(score_dis, cords)
+
             RETURN_BUTTON, LEADER_BUTTON = create.create_death_buttons(death_s, (x, 70))
 
             RETURN_BUTTON.update(screen, chosen == 0)
