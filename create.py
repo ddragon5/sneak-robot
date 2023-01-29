@@ -196,10 +196,16 @@ def create_death_buttons(death_s, pos):
     pos = (x, y)
     RETURN_BUTTON = Button(return_image, pos, return_image, colorkey)
 
+    save_image = pygame.image.load('save.png')
+    save_image = pygame.transform.scale(save_image, (400, 500))
+    x += 145
+    pos = (x, y)
+    SAVE_BUTTON = Button(save_image, pos, save_image, colorkey)
+
     leader_image = pygame.image.load('leader.png')
     leader_image = pygame.transform.scale(leader_image, (400, 500))
-    x += 290
+    x += 145
     pos = (x, y)
     LEADER_BUTTON = Button(leader_image, pos, leader_image, colorkey)
 
-    return RETURN_BUTTON, LEADER_BUTTON
+    return RETURN_BUTTON, LEADER_BUTTON, SAVE_BUTTON

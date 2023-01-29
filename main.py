@@ -292,13 +292,13 @@ def run(screen, size, g, f):
                             chosen = 2
                     if event.key == pygame.K_RIGHT:
                         chosen += 1
-                        if chosen >= 3:
+                        if chosen >= 4:
                             chosen = 0
                     if event.key == pygame.K_SPACE or event.key == pygame.K_RETURN:
                         if chosen == 0:
                             start_menu = True
                             death_screen = False
-                        if chosen == 1:
+                        if chosen == 2:
                             leaderboard = True
                             death_screen = False
 
@@ -360,10 +360,11 @@ def run(screen, size, g, f):
             cords = bx, by
             screen.blit(score_dis, cords)
 
-            RETURN_BUTTON, LEADER_BUTTON = create.create_death_buttons(death_s, (x, 70))
+            RETURN_BUTTON, LEADER_BUTTON, SAVE_BUTTON = create.create_death_buttons(death_s, (x, 70))
 
             RETURN_BUTTON.update(screen, chosen == 0)
-            LEADER_BUTTON.update(screen, chosen == 1)
+            LEADER_BUTTON.update(screen, chosen == 2)
+            SAVE_BUTTON.update(screen, chosen == 1)
             os.chdir(path)
 
             pygame.display.update()
