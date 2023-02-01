@@ -278,6 +278,8 @@ def run(screen, size, g, f):
             clock.tick(fps)
 
         chosen = 0
+        i = 0
+        save = False
         while death_screen:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -286,21 +288,38 @@ def run(screen, size, g, f):
                     if event.key == pygame.K_ESCAPE:
                         running = False
                         death_screen = False
-                    if event.key == pygame.K_LEFT:
-                        chosen -= 1
-                        if chosen <= -1:
-                            chosen = 2
-                    if event.key == pygame.K_RIGHT:
-                        chosen += 1
-                        if chosen >= 4:
-                            chosen = 0
-                    if event.key == pygame.K_SPACE or event.key == pygame.K_RETURN:
-                        if chosen == 0:
-                            start_menu = True
-                            death_screen = False
-                        if chosen == 2:
-                            leaderboard = True
-                            death_screen = False
+                    if not save:
+                        if event.key == pygame.K_LEFT:
+                            chosen -= 1
+                            if chosen <= -1:
+                                chosen = 2
+                        if event.key == pygame.K_RIGHT:
+                            chosen += 1
+                            if chosen >= 4:
+                                chosen = 0
+                        if event.key == pygame.K_SPACE or event.key == pygame.K_RETURN:
+                            if chosen == 0:
+                                start_menu = True
+                                death_screen = False
+                            if chosen == 2:
+                                leaderboard = True
+                                death_screen = False
+                            if chosen == 1:
+                                save = True
+                                text_box = create.text_box(SAVE_BUTTON, screen, best_font, best_COL)
+                                name = ''
+                    if save:
+                        if event.key == pygame.K_RETURN:
+                            save = False
+                            # Check for backspace
+                            if event.key == pygame.K_BACKSPACE:
+                                # get text input from 0 to -1 i.e. end.
+                                name = name[:-1]
+
+                            # Unicode standard is used for string
+                            # formation
+                            else:
+                                name += event.unicode
 
             path = os.getcwd()
             os.chdir('png')
@@ -362,12 +381,18 @@ def run(screen, size, g, f):
 
             RETURN_BUTTON, LEADER_BUTTON, SAVE_BUTTON = create.create_death_buttons(death_s, (x, 70))
 
-            RETURN_BUTTON.update(screen, chosen == 0)
-            LEADER_BUTTON.update(screen, chosen == 2)
-            SAVE_BUTTON.update(screen, chosen == 1)
-            os.chdir(path)
+            if not save:
+                RETURN_BUTTON.update(screen, chosen == 0)
+                LEADER_BUTTON.update(screen, chosen == 2)
+                SAVE_BUTTON.update(screen, chosen == 1)
+            if save:
+                SAVE_BUTTON.update(screen, True)
+                cords = pygame.mouse.get_pos()
+                misc.text_box_update(text_box, screen, cords, i % 2 == 0, name)
 
+            os.chdir(path)
             pygame.display.update()
+            i += 1
             clock.tick(fps)
 
 def main():

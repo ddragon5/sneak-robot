@@ -209,3 +209,8 @@ def create_death_buttons(death_s, pos):
     LEADER_BUTTON = Button(leader_image, pos, leader_image, colorkey)
 
     return RETURN_BUTTON, LEADER_BUTTON, SAVE_BUTTON
+
+
+def text_box(SAVE_BUTTON, screen, best_font, best_COL):
+    box_dis = best_font.render("Enter name", True, best_COL)
+    return box_dis

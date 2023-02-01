@@ -84,3 +84,11 @@ def longer(snakes, size, g, screen, skin):
     snake.new = False
     snakes.insert(1, snake)
     return snakes
+
+
+########################################################################################################################
+
+
+def text_box_update(text_box, screen, cords, i, name):
+    if len(name) == 0:
+        print(type(name))
