@@ -113,18 +113,21 @@ class snake(pygame.sprite.Sprite):
         Background_rect = Background_.get_rect()
         is_dead = False
         # checking if out of bonds
-        if not Background_rect.contains(self.rect):
+        if self.type == Spots.HEAD:
+            print(self.y)
+        if self.x > 690 or self.x < 0 or self.y > 600 or self.y < 0:
             is_dead = True
             print('cause of death out of bounds')
+            return is_dead, fruits, snakes, score
         # checking if he collided with him self except if he hit his neck
         for i in range(len(snakes) - 2):
             s = snakes[i]
             r = s.rect
             if self.rect.contains(r):
                 is_dead = True  # True or False
-            if is_dead:
                 print("cause of death inside self")
-                print('specially', str(s.type), str(i), str(s.gir_pos))
+                print('specially', str(s.type), str(i), str(s.gir_pos), 'was in ', str(self.type), str(self.index), str(self.gir_pos))
+                return is_dead, fruits, snakes, score
         # checking if the snake has eaten a fruit
         for i in range(len(fruits)):
             t = fruits[i]
@@ -155,22 +158,21 @@ class fruit(pygame.sprite.Sprite):
 
     def spawn(self, screen, snakes, g):
         size = self.size
-        n = True
-        while n:
+        redo = True
+        while redo:
             x1 = random.randint(1, g)  # get a random row to spawn in
             self.x = (x1 - 1) * size[0]  # get the x of the row
-            y1 = random.randint(1, 41)  # get a random line to spawn in
+            y1 = random.randint(1, 40)  # get a random line to spawn in
             self.y = y1 * size[1]  # get the y of the line
-            x_list = []
+            self.rect.update(self.x, self.y, size[0], size[1])
+            screen.blit(self.image, (self.x, self.y))
+            redo1 = False
+            # test if the fruit isn't in a snake
             for i in range(len(snakes)):
-                x_list.append(snakes[i].x)
-                x_list.append(snakes[i].y)
-            if not (x1 or y1) in x_list:  # test if the fruit isn't in a snake
-                self.rect.update(self.x, self.y, size[0], size[1])
-                screen.blit(self.image, (self.x, self.y))
-                n = False
-            else:  # redo
-                n = True
+                n = snakes[i]
+                if n.rect.contains(self.rect):
+                    redo1 = True
+            redo = redo1
         return self
 
 

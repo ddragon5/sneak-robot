@@ -2,6 +2,9 @@ import classes
 import pygame
 import os
 
+import create
+
+
 def get_color(n, skin=0):
     # the color of the fruit
     color = ';lksjcvbglgjhckvb'
@@ -19,6 +22,9 @@ def get_color(n, skin=0):
             return (111, 28, 240)  # pink
         if skin == 3:
             return (251, 179, 198)  # purple
+
+
+########################################################################################################################
 
 
 def get_dir(slots_s, c, snakes):
@@ -40,6 +46,9 @@ def get_dir(slots_s, c, snakes):
                 return l
 
 
+########################################################################################################################
+
+
 def get_center(rect, sprite):
     x = sprite.x + (sprite.size[0]) / 2
     x = int(x)
@@ -47,6 +56,9 @@ def get_center(rect, sprite):
     y = int(y)
     rect.center = (x, y)
     return rect
+
+
+########################################################################################################################
 
 
 def longer(snakes, size, g, screen, skin):
@@ -90,5 +102,20 @@ def longer(snakes, size, g, screen, skin):
 
 
 def text_box_update(text_box, screen, cords, i, name):
-    if len(name) == 0:
-        print(type(name))
+    if i:
+        color = (255, 249, 189)
+    else:
+        color = (25, 25, 25)
+
+    path = os.getcwd()
+    os.chdir('pixel_font')
+    font = pygame.font.Font('Grand9K Pixel.ttf', 40)
+    font.bold = True
+
+    text_box = create.text_box(name, screen, font, color)
+
+    screen.blit(text_box, cords)
+    os.chdir(path)
+
+
+########################################################################################################################

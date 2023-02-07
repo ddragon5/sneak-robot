@@ -28,11 +28,6 @@ def update(screen, snakes, n_dir, fruits, g, f, score, skin):
         n = snakes[i]
         snakes, count, dir_all = n.update(screen, snakes, score, count, i, n_dir, dir_all)
 
-    # check if player was killed
-    n = snakes[len(snakes) - 1]
-    running, fruits, snakes, score = n.check(snakes, Background_, fruits, screen, g, score, skin)
-    running = not running
-
     for i in range(len(snakes)):
         n = snakes[i]
         n.moved = False
@@ -43,6 +38,11 @@ def update(screen, snakes, n_dir, fruits, g, f, score, skin):
             snakes[i].type = classes.Spots.HEAD
         if n.type == classes.Spots.BLANK:
             snakes[i].type = classes.Spots.BODY
+
+    # check if player was killed
+    n = snakes[len(snakes) - 1]
+    running, fruits, snakes, score = n.check(snakes, Background_, fruits, screen, g, score, skin)
+    running = not running
 
     pygame.font.init()
     Score_font = pygame.font.SysFont('arialblack', 40)
@@ -218,7 +218,7 @@ def run(screen, size, g, f):
 
             if skin_s:
                 SKINS_BUTTON.update(screen, True)
-                SKINS_SLIDER[scroll-1].update(screen, True)
+                SKINS_SLIDER[scroll - 1].update(screen, True)
 
                 DIFFICULTY_BUTTON.update(screen, False)
                 RETURN_BUTTON.update(screen, False)
@@ -302,15 +302,22 @@ def run(screen, size, g, f):
                                 start_menu = True
                                 death_screen = False
                             if chosen == 2:
-                                leaderboard = True
-                                death_screen = False
+                                # leaderboard = True
+                                # death_screen = False
+                                pass
                             if chosen == 1:
                                 save = True
-                                text_box = create.text_box(SAVE_BUTTON, screen, best_font, best_COL)
-                                name = ''
+                                i = 0
+                                text_box = create.text_box(name, screen, best_font, best_COL)
+                                name = 'Enter name'
+                                has_changed = False
                     if save:
-                        if event.key == pygame.K_RETURN:
-                            save = False
+                        if event.type == pygame.KEYDOWN:
+                            if event.key == pygame.K_RETURN:
+                                if i == 0:
+                                    pass
+                                else:
+                                    save = False
                             # Check for backspace
                             if event.key == pygame.K_BACKSPACE:
                                 # get text input from 0 to -1 i.e. end.
@@ -319,26 +326,30 @@ def run(screen, size, g, f):
                             # Unicode standard is used for string
                             # formation
                             else:
-                                name += event.unicode
+                                if len(name) == 10 and i > 0 and not has_changed:
+                                    has_changed = True
+                                    name = str(event.unicode)
+                                else:
+                                    command_keys = [pygame.K_ESCAPE, pygame.K_RETURN, pygame.K_BACKSPACE, pygame.K_AT,
+                                                    pygame.K_LALT]
+                                    if event.key not in command_keys:
+                                        name += str(event.unicode)
 
             path = os.getcwd()
             os.chdir('png')
-            # I need to somehow save the run show the best score and maby make a popup bigger
-            # I will ask Tom he will help but first maby I will need to start on networking for that save part
-
             death_s = pygame.image.load('death_screen.png')
             death_s = pygame.transform.scale(death_s, (width, height))
             screen.blit(death_s, (0, 0))
 
             # game over text
-            pygame.font.init()
+
             gm_font = pygame.font.SysFont('arialblack', 40)
             gm_COL = (255, 255, 255)
             gm_dis = gm_font.render("Game Over", True, gm_COL)
             rect = gm_dis.get_rect()
             rect.center = width / 2 - 30, 20
-            screen.blit(gm_dis, (death_s.get_size()[0] / 2-rect.width/2, 70))
-            x = death_s.get_size()[0] / 2-rect.width/2
+            screen.blit(gm_dis, (death_s.get_size()[0] / 2 - rect.width / 2, 70))
+            x = death_s.get_size()[0] / 2 - rect.width / 2
 
             os.chdir('pixel_font')
             best_font = pygame.font.Font('Grand9K Pixel.ttf', 40)
@@ -346,7 +357,7 @@ def run(screen, size, g, f):
             best_COL = (25, 25, 25)
             best_dis = best_font.render("Best:".upper(), False, best_COL)
             b_rect = best_dis.get_rect()
-            b_rect.center = x+20, 70
+            b_rect.center = x + 20, 70
             cords = 407, 245
             screen.blit(best_dis, cords)
             os.chdir(path)
@@ -387,13 +398,14 @@ def run(screen, size, g, f):
                 SAVE_BUTTON.update(screen, chosen == 1)
             if save:
                 SAVE_BUTTON.update(screen, True)
-                cords = pygame.mouse.get_pos()
-                misc.text_box_update(text_box, screen, cords, i % 2 == 0, name)
+                cords = (202, 363)
+                misc.text_box_update(text_box, screen, cords, i % 5 == 0, name)
 
             os.chdir(path)
             pygame.display.update()
             i += 1
             clock.tick(fps)
+
 
 def main():
     screen = create.window()

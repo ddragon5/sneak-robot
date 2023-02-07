@@ -211,6 +211,19 @@ def create_death_buttons(death_s, pos):
     return RETURN_BUTTON, LEADER_BUTTON, SAVE_BUTTON
 
 
-def text_box(SAVE_BUTTON, screen, best_font, best_COL):
-    box_dis = best_font.render("Enter name", True, best_COL)
+########################################################################################################################
+
+
+def text_box(text, screen, font, color, size=40):
+    if text == '' or text:
+        text = 'Enter name'
+
+    pygame.font.init()
+    box_dis = font.render(text, True, color)
     return box_dis
+
+
+########################################################################################################################
+
+
+
