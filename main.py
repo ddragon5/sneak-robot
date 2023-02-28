@@ -3,6 +3,7 @@ import classes
 import create
 import misc
 import os
+import socket
 
 width = 690  # 17 slots 53 pixel each
 height = 600  # 15 slots 40 pixel each
@@ -61,6 +62,7 @@ def run(screen, size, g, f):
     start_menu = True
     death_screen = False
     settings_menu = False
+    leaderboard = False
     running = True
     al_dir = []
     best_score = 0
@@ -302,14 +304,14 @@ def run(screen, size, g, f):
                                 start_menu = True
                                 death_screen = False
                             if chosen == 2:
-                                # leaderboard = True
-                                # death_screen = False
-                                pass
+                                leaderboard = True
+                                death_screen = False
+
                             if chosen == 1:
                                 save = True
                                 i = 0
-                                text_box = create.text_box(name, screen, best_font, best_COL)
                                 name = 'Enter name'
+                                text_box = create.text_box(name, screen, best_font, best_COL)
                                 has_changed = False
                     if save:
                         if event.type == pygame.KEYDOWN:
@@ -342,10 +344,11 @@ def run(screen, size, g, f):
             screen.blit(death_s, (0, 0))
 
             # game over text
+            from create import text_box
 
             gm_font = pygame.font.SysFont('arialblack', 40)
             gm_COL = (255, 255, 255)
-            gm_dis = gm_font.render("Game Over", True, gm_COL)
+            gm_dis = text_box("Game Over", screen, gm_font, gm_COL)
             rect = gm_dis.get_rect()
             rect.center = width / 2 - 30, 20
             screen.blit(gm_dis, (death_s.get_size()[0] / 2 - rect.width / 2, 70))
@@ -373,19 +376,19 @@ def run(screen, size, g, f):
 
             # show the name
             os.chdir('pixel_font')
-            best_font = pygame.font.Font('Grand9K Pixel.ttf', 40)
-            best_font.bold = True
-            best_COL = (25, 25, 25)
-            best_dis = best_font.render('name:'.upper(), False, best_COL)
-            b_rect = best_dis.get_rect()
-            b_rect.center = x + 20, 70
+            name_font = pygame.font.Font('Grand9K Pixel.ttf', 40)
+            name_font.bold = True
+            name_COL = (25, 25, 25)
+            name_dis = best_font.render('name:'.upper(), False, best_COL)
+            name_rect = name_dis.get_rect()
+            name_rect.center = x + 20, 70
             cords = 146, 245
-            screen.blit(best_dis, cords)
+            screen.blit(name_dis, cords)
             os.chdir(path)
             os.chdir('png')
 
             score_dis = best_font.render(name, False, best_COL)
-            bx, by = cords  # make the text be in the same place as the BEST:
+            bx, by = cords  # make the text be in the same place as the name:
             by += 50  # make it a bit lower
             cords = bx, by
             screen.blit(score_dis, cords)
@@ -404,6 +407,42 @@ def run(screen, size, g, f):
             os.chdir(path)
             pygame.display.update()
             i += 1
+            clock.tick(fps)
+
+        while leaderboard:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+                if event.type == pygame.KEYDOWN:
+                    key = event.key
+                    if key == pygame.K_ESCAPE:
+                        running = False
+                    if key == pygame.K_RIGHT or key == pygame.K_d:
+                        chosen += 1
+                        if chosen >= 5:
+                            chosen = 1
+                    if key == pygame.K_LEFT or key == pygame.K_a:
+                        chosen -= 1
+                        if chosen <= 0:
+                            chosen = 4
+
+            from create import text_box
+            path = os.getcwd()
+            print(path)
+            os.chdir('png')
+            os.chdir('pixel_font')
+            print(os.getcwd())
+
+            # create title
+            title_font = pygame.font.Font('Grand9K Pixel.ttf', 40)
+            title_color = (50, 50, 50)
+            title = text_box("Leaderboard", screen, title_font, title_color)
+            x = (width - title.get_size()[0]) / 2
+            y = 20
+            screen.blit(title, (x, y))
+
+            pygame.display.update()
+            os.chdir(path)
             clock.tick(fps)
 
 

@@ -215,11 +215,13 @@ def create_death_buttons(death_s, pos):
 
 
 def text_box(text, screen, font, color, size=40):
-    if text == '' or text:
-        text = 'Enter name'
-
     pygame.font.init()
+
+    if type(font) == str:
+        font = pygame.font.Font(font, size)
+
     box_dis = font.render(text, True, color)
+
     return box_dis
 
 

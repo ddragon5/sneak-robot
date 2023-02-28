@@ -113,8 +113,6 @@ class snake(pygame.sprite.Sprite):
         Background_rect = Background_.get_rect()
         is_dead = False
         # checking if out of bonds
-        if self.type == Spots.HEAD:
-            print(self.y)
         if self.x > 690 or self.x < 0 or self.y > 600 or self.y < 0:
             is_dead = True
             print('cause of death out of bounds')
